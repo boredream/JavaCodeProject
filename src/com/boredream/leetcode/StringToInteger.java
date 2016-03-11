@@ -1,4 +1,4 @@
-package com.boredream;
+package com.boredream.leetcode;
 
 public class StringToInteger {
 	public static void main(String[] args) {
