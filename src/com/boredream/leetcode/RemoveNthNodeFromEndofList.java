@@ -3,10 +3,12 @@ package com.boredream.leetcode;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.boredream.leetcode.entity.ListNode;
+
 public class RemoveNthNodeFromEndofList {
 	public static void main(String[] args) {
 		Integer[] array = { 1, 2, 3, 4, 5 };
-		ListNode head = array2nodelist(array);
+		ListNode head = ListNode.array2nodelist(array);
 		System.out.println(removeNthFromEnd(head, 6));
 	}
 
@@ -33,33 +35,6 @@ public class RemoveNthNodeFromEndofList {
 
 		values.remove(values.size() - n);
 		Integer[] array = values.toArray(new Integer[values.size()]);
-		return array2nodelist(array);
-	}
-
-	public static ListNode array2nodelist(Integer[] array) {
-		ListNode nextNode = null;
-		for (int i = array.length - 1; i >= 0; i--) {
-			ListNode node = new ListNode(array[i]);
-			if (nextNode != null) {
-				node.next = nextNode;
-			}
-			nextNode = node;
-		}
-		return nextNode;
-	}
-
-	public static class ListNode {
-		int val;
-		ListNode next;
-
-		ListNode(int x) {
-			val = x;
-		}
-
-		@Override
-		public String toString() {
-			return "ListNode [val=" + val + ", next=" + next + "]";
-		}
-
+		return ListNode.array2nodelist(array);
 	}
 }
