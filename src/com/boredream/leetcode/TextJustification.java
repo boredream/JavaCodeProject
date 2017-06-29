@@ -17,6 +17,9 @@ public class TextJustification {
     private static StringBuilder sb = new StringBuilder();
 
     public static List<String> fullJustify(String[] words, int maxWidth) {
+
+
+
         List<String> list = new ArrayList<>();
         for (String word : words) {
             if(word.length() > maxWidth) {
