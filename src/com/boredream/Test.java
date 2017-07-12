@@ -1,35 +1,30 @@
 package com.boredream;
 
 public class Test {
-    public static int total = 0;
-
-    public static void swap(String[] str, int i, int j) {
-        String temp;
-        temp = str[i];
-        str[i] = str[j];
-        str[j] = temp;
-    }
-
-    public static void arrange(String[] str, int st, int len) {
-        if (st == len - 1) {
-            for (int i = 0; i < len; i++) {
-                System.out.print(str[i] + "  ");
-            }
-            System.out.println();
-            total++;
-        } else {
-            for (int i = st; i < len; i++) {
-                swap(str, st, i);
-                arrange(str, st + 1, len);
-                swap(str, st, i);
-            }
-        }
-
-    }
 
     public static void main(String[] args) {
-        String str[] = {"r1", "r2", "r3", "b1", "b2"};
-        arrange(str, 0, str.length);
-        System.out.println(total);
+        int imageWidth = 1600;
+        int imageHeight = 600;
+
+        int maxSize = 300;
+        float ratio = 1f * imageWidth / imageHeight;
+        int height,width;
+        if(ratio < 0.5) {
+            height = maxSize;
+            width = maxSize/2;
+        } else if(ratio < 1) {
+            height = maxSize;
+            width = (int) (ratio * maxSize);
+        } else if(ratio < 2) {
+            height = (int) (1f * maxSize / ratio);
+            width = maxSize;
+        } else {
+            height = maxSize/2;
+            width = maxSize;
+        }
+
+        System.out.println("image " + imageWidth + ":" + imageHeight);
+        System.out.println("ratio " + ratio);
+        System.out.println("view " + width + ":" + height);
     }
 }
