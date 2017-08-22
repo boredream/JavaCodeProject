@@ -2,7 +2,6 @@ package com.boredream.leetcode;
 
 public class ReverseInteger {
 	public static void main(String[] args) {
-		// 没有注意到反转后超过int范围的情况
 		int x = 1534236469;
 		System.out.println(reverse(x));
 	}

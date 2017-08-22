@@ -2,8 +2,6 @@ package com.boredream.leetcode;
 
 public class StringToInteger {
 	public static void main(String[] args) {
-		// 难度Easy, 但是各种坑
-		// +-符号,以及空格,范围越界后取边界值而不是取0...
 		String s = "  - 321";
 		System.out.println(myAtoi(s));
 	}

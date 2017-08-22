@@ -27,7 +27,6 @@ public class RegularExpressionMatching {
 		boolean isMatch = true;
 		for (int sIndex = 0, pIndex = 0; sIndex < s.length()
 				&& pIndex < p.length();) {
-			// 如果有下一个字符,且为*
 			int pIndexNext = pIndex + 1;
 			boolean nextStar = false;
 			if (pIndexNext < s.length()) {
