@@ -1,6 +1,5 @@
 package com.boredream.entity;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class TreeNode {
@@ -38,43 +37,33 @@ public class TreeNode {
 
     @Override
     public String toString() {
-        // FIXME: 2017/11/23 
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < print(this).size(); i++) {
-            System.out.print(print(this).get(i) + " ");
-        }
-        return sb.toString();
-    }
-
-    public ArrayList<String> print(TreeNode root) {
-        ArrayList<String> result = new ArrayList<>();
-        if (root == null) {
-            return result;
-        }
         LinkedList<TreeNode> queue = new LinkedList<>();
 
-        queue.offer(root);
-        result.add(root.val + "");
+        queue.offer(this);
         while (!queue.isEmpty()) {
             int size = queue.size();
             for (int i = 0; i < size; i++) {
                 TreeNode head = queue.poll();
+                sb.append(head.val).append(" ");
 
                 if (head.left != null) {
                     queue.offer(head.left);
-                    result.add(head.left.val + "");
-                } else {
-                    result.add("X");
                 }
 
                 if (head.right != null) {
                     queue.offer(head.right);
-                    result.add(head.right.val + "");
-                } else {
-                    result.add("X");
                 }
             }
+            sb.append("\n");
         }
-        return result;
+
+        return sb.toString();
+    }
+
+    public static void main(String[] args) {
+        // test
+        TreeNode node = TreeNode.test();
+        System.out.println(node);
     }
 }

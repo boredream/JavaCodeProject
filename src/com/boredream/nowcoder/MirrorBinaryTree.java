@@ -12,6 +12,7 @@ public class MirrorBinaryTree {
 
     public static void main(String[] args) {
         TreeNode test = TreeNode.test();
+        System.out.println(test);
         Mirror2(test);
         System.out.println(test);
     }
