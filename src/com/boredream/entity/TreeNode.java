@@ -1,4 +1,4 @@
-package com.boredream.leetcode.entity;
+package com.boredream.entity;
 
 public class TreeNode {
     public int val;

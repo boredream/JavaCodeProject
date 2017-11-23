@@ -1,6 +1,6 @@
 package com.boredream.leetcode;
 
-import com.boredream.leetcode.entity.ListNode;
+import com.boredream.entity.ListNode;
 
 /**
  * 转向链式列表

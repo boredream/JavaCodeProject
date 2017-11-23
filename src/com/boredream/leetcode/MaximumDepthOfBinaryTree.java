@@ -1,6 +1,6 @@
 package com.boredream.leetcode;
 
-import com.boredream.leetcode.entity.TreeNode;
+import com.boredream.entity.TreeNode;
 
 /**
  * Created by lichunyang on 2017/7/31.

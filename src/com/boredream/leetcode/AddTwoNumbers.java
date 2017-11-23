@@ -3,7 +3,7 @@ package com.boredream.leetcode;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.boredream.leetcode.entity.ListNode;
+import com.boredream.entity.ListNode;
 
 public class AddTwoNumbers {
 	public static void main(String[] args) {

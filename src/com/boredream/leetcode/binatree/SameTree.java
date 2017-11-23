@@ -1,6 +1,6 @@
 package com.boredream.leetcode.binatree;
 
-import com.boredream.leetcode.entity.TreeNode;
+import com.boredream.entity.TreeNode;
 
 /**
  * 比较俩二叉树相等

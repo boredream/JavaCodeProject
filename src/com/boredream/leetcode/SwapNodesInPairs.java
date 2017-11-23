@@ -1,6 +1,6 @@
 package com.boredream.leetcode;
 
-import com.boredream.leetcode.entity.ListNode;
+import com.boredream.entity.ListNode;
 
 /**
  * 给定一个linked list，每两个node交换一次，最终返回结果
