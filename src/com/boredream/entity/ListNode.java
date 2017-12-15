@@ -5,13 +5,23 @@ public class ListNode {
 	public int val;
 	public ListNode next;
 
+	public ListNode() {
+
+	}
+
 	public ListNode(int x) {
 		val = x;
 	}
 
 	@Override
 	public String toString() {
-		return "ListNode [val=" + val + ", next=" + next + "]";
+		ListNode head = this;
+		StringBuilder sb = new StringBuilder();
+		while (head != null) {
+			sb.append(head.val).append("->");
+			head = head.next;
+		}
+		return sb.toString().substring(0, sb.length() - 2);
 	}
 	
 	public static ListNode array2nodelist(Integer[] array) {
