@@ -1,5 +1,7 @@
 package com.boredream;
 
+import com.boredream.sword2offer.Singletons;
+
 public class Test {
 
     public static void main(String[] args) {

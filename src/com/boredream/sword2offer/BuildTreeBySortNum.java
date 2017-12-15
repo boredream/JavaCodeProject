@@ -1,6 +1,9 @@
 package com.boredream.sword2offer;
 
 public class BuildTreeBySortNum {
+
+    // TODO: 2017/12/13 ？没啥思路
+
     /**
      * 二叉树节点类
      */
@@ -13,16 +16,16 @@ public class BuildTreeBySortNum {
     /**
      * 输入某二叉树的前序遍历和中序遍历的结果，请重建出该二节树。假设输入的前序遍历和中序遍历的结果中都不含重复的数字。
      *
-     * @param preorder 前序遍历
-     * @param inorder  中序遍历
+     * @param preOrder 前序遍历
+     * @param inOrder  中序遍历
      * @return 树的根结点
      */
-    public static BinaryTreeNode construct(int[] preorder, int[] inorder) {
+    public static BinaryTreeNode construct(int[] preOrder, int[] inOrder) {
         // 输入的合法性判断，两个数组都不能为空，并且都有数据，而且数据的数目相同
-        if (preorder == null || inorder == null || preorder.length != inorder.length || inorder.length < 1) {
+        if (preOrder == null || inOrder == null || preOrder.length != inOrder.length || inOrder.length < 1) {
             return null;
         }
-        return construct(preorder, 0, preorder.length - 1, inorder, 0, inorder.length - 1);
+        return construct(preOrder, 0, preOrder.length - 1, inOrder, 0, inOrder.length - 1);
     }
 
     /**
