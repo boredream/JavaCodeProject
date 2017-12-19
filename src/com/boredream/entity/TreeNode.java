@@ -15,28 +15,27 @@ public class TreeNode {
         val = x;
     }
 
-    /**
-     *         6
-     *    3        8
-     * -    2   -     4
-     *              10 15
-     */
     public static TreeNode test() {
-        TreeNode node = new TreeNode(6);
-
-        TreeNode left = new TreeNode(3);
-        left.right = new TreeNode(2);
-        node.left = left;
-
-        TreeNode right2 = new TreeNode(4);
-        right2.left = new TreeNode(10);
-        right2.right = new TreeNode(15);
-
-        TreeNode right = new TreeNode(8);
-        right.right = right2;
-        node.right = right;
-
-        return node;
+        //       8
+        //    /    \
+        //   6      10
+        //  / \     / \
+        // 5   7   9  11
+        TreeNode root = new TreeNode();
+        root.val = 8;
+        root.left = new TreeNode();
+        root.left.val = 6;
+        root.left.left = new TreeNode();
+        root.left.left.val = 5;
+        root.left.right = new TreeNode();
+        root.left.right.val = 7;
+        root.right = new TreeNode();
+        root.right.val = 10;
+        root.right.left = new TreeNode();
+        root.right.left.val = 9;
+        root.right.right = new TreeNode();
+        root.right.right.val = 11;
+        return root;
     }
 
     @Override

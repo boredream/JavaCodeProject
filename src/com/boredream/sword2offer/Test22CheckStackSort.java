@@ -16,7 +16,7 @@ public class Test22CheckStackSort {
         if(push == null && pop == null) return true;
         if(push == null || pop == null) return false;
 
-
+        // TODO: 2017/12/19 不是应该54321 才是弹出顺序嘛？
 
         return true;
     }
