@@ -38,6 +38,29 @@ public class TreeNode {
         return root;
     }
 
+    public static TreeNode testSort() {
+        //       4
+        //     /   \
+        //    2     6
+        //  / \     / \
+        // 1   3   5   7
+        TreeNode root = new TreeNode();
+        root.val = 4;
+        root.left = new TreeNode();
+        root.left.val = 2;
+        root.left.left = new TreeNode();
+        root.left.left.val = 1;
+        root.left.right = new TreeNode();
+        root.left.right.val = 3;
+        root.right = new TreeNode();
+        root.right.val = 6;
+        root.right.left = new TreeNode();
+        root.right.left.val = 5;
+        root.right.right = new TreeNode();
+        root.right.right.val = 7;
+        return root;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

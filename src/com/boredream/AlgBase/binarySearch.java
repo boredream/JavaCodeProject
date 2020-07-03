@@ -5,7 +5,7 @@ package com.boredream.AlgBase;
  */
 public class binarySearch {
 
-    public static void main(String[] args) {
+    public static void main(StringAlg[] args) {
         System.out.println(binarySearch(new int[]{1,3,5,7,2,2,4,6,8,0}, 7));
     }
 

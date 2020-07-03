@@ -6,7 +6,7 @@ import java.util.Stack;
 
 public class QueueStack {
 
-    public static void main(String[] args) {
+    public static void main(StringAlg[] args) {
         // 栈，先进后出
         Stack<Integer> stack = new Stack<>();
         for (int i = 0; i < 10; i++) {
