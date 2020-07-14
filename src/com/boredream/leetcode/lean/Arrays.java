@@ -1,6 +1,9 @@
 package com.boredream.leetcode.lean;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.TreeSet;
 
 /**
  * https://leetcode.com/explore/learn/card/fun-with-arrays
@@ -8,8 +11,8 @@ import java.util.HashSet;
 public class Arrays {
 
     public static void main(String[] args) {
-        int[] nums = {0};
-        new Arrays().sortArrayByParity(nums);
+        int[] nums = {4, 3, 2, 7, 8, 2, 3, 1};
+        System.out.println(new Arrays().findDisappearedNumbers(nums));
         System.out.println(java.util.Arrays.toString(nums));
     }
 
@@ -65,8 +68,6 @@ public class Arrays {
         }
         return B;
     }
-
-    // INSERT
 
     // 遇到0复制一次，同时右边的数字向右移动，原有数组上操作
     public void duplicateZeros(int[] arr) {
@@ -233,9 +234,79 @@ public class Arrays {
 
     // 排序前后有多少个数字不同
     public int heightChecker(int[] heights) {
+        // 手撸排序基本功，快速
         int count = 0;
-
+        int[] oldHeights = java.util.Arrays.copyOf(heights, heights.length);
+        heightChecker(heights, 0, heights.length - 1);
+        for (int i = 0; i < oldHeights.length; i++) {
+            if (oldHeights[i] != heights[i]) count++;
+        }
         return count;
     }
 
+    private void heightChecker(int[] heights, int start, int end) {
+        if (start >= end) return;
+        // 首位作为比较数
+        int compare = heights[start];
+        // 从第二位遍历到末尾
+        int low = start + 1;
+        int high = end;
+        while (true) {
+            // low向右遍历，找到大于compare的数字为止
+            while (low <= end && heights[low] < compare) low++;
+            // high向左遍历，找到小于compare的数字为止
+            while (high >= start + 1 && heights[high] > compare) high--;
+            // 如果俩数交叉，结束
+            if (low >= high) break;
+            // 正常交换
+            int temp = heights[low];
+            heights[low] = heights[high];
+            heights[high] = temp;
+        }
+
+        // 结束后，交换比较数字和停止的中间位置
+        heights[start] = heights[high];
+        heights[high] = compare;
+
+        // 继续二分递归
+        heightChecker(heights, start, high - 1);
+        heightChecker(heights, high + 1, end);
+    }
+
+    // 找到第三大数字，没有就最大数字。相同数字算一个等级。时间要求 O(N)
+    public int thirdMax(int[] nums) {
+        // Tree排序，Set去重
+        int max = 0;
+        TreeSet<Integer> set = new TreeSet<>();
+        for (int num : nums) {
+            set.add(num);
+        }
+        if (set.size() >= 3) {
+            for (int i = 0; i < 3; i++) {
+                max = set.pollLast();
+            }
+        } else {
+            max = set.last();
+        }
+        return max;
+    }
+
+    // 找到最大最小数字间未出现的数字。时间 O(N) + 无额外空间
+    public List<Integer> findDisappearedNumbers(int[] nums) {
+        // TODO: 2020/7/14 不使用额外空间，直接利用已有数组nums，数字值映射到索引，然后用负数不破坏原有数字进行标记，最后再次遍历找到未标记的数字，其索引就是目标
+        List<Integer> ret = new ArrayList<>();
+        for (int i = 0; i < nums.length; i++) {
+            int val = Math.abs(nums[i]) - 1;
+            if (nums[val] > 0) {
+                nums[val] = -nums[val];
+            }
+        }
+
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] > 0) {
+                ret.add(i + 1);
+            }
+        }
+        return ret;
+    }
 }
