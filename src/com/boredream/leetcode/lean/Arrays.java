@@ -234,6 +234,7 @@ public class Arrays {
     // 排序前后有多少个数字不同
     public int heightChecker(int[] heights) {
         int count = 0;
+
         return count;
     }
 
