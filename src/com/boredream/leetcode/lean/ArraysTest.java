@@ -8,11 +8,11 @@ import java.util.TreeSet;
 /**
  * https://leetcode.com/explore/learn/card/fun-with-arrays
  */
-public class Arrays {
+public class ArraysTest {
 
     public static void main(String[] args) {
         int[] nums = {4, 3, 2, 7, 8, 2, 3, 1};
-        System.out.println(new Arrays().findDisappearedNumbers(nums));
+        System.out.println(new ArraysTest().findDisappearedNumbers(nums));
         System.out.println(java.util.Arrays.toString(nums));
     }
 
