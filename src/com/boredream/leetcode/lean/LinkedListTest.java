@@ -8,8 +8,8 @@ import com.boredream.entity.ListNode;
 public class LinkedListTest {
 
     public static void main(String[] args) {
-        ListNode nodeA = ListNode.array2nodelist(new Integer[]{1,2,3,6,4,5,6});
-        System.out.println(new LinkedListTest().removeElements(nodeA, 6));
+        ListNode nodeA = ListNode.array2nodelist(new Integer[]{1,2});
+        System.out.println(new LinkedListTest().isPalindrome(nodeA));
     }
 
     // 判断是否有循环
@@ -200,8 +200,64 @@ public class LinkedListTest {
         // TODO: 2020/7/22 还有递归方式
     }
 
-    // 重组数组，让奇数位在前，偶数位在后。oN时间 + o1空间
+    // 重组数组，让奇数位在前，偶数位在后（第几位的奇偶，不是val值的奇偶）。oN时间 + o1空间
     public ListNode oddEvenList(ListNode head) {
-        return null;
+        if (head == null || head.next == null) return head;
+        // 1,2,3,4,5,6,7 -> 1,3,5,7 , 2,4,6
+        // next前进一次保留，再一次放在tail里，结束俩拼一起
+        ListNode curOdd = head;
+        ListNode even = head.next;
+        ListNode curEven = even;
+        while (curEven != null && curEven.next != null) {
+            // 跳一格
+            curOdd.next = curOdd.next.next;
+            curEven.next = curEven.next.next;
+            curOdd = curOdd.next;
+            curEven = curEven.next;
+        }
+        curOdd.next = even;
+        return head;
+        // TODO: 2020/7/24 代码简单，双指针不影响的关系需要梳理理解
+    }
+
+    // 判断是否是回文，oN时间 + o1空间
+    public boolean isPalindrome(ListNode head) {
+        if (head == null || head.next == null) return true;
+        // 2,3,2是回文，1,2,3,2,1也是回文，dp？ 单链路，不行
+        // o1空间，hash也不行
+        // 直接reverse再挨个对比，保留原有数据要oN空间
+
+        // 第一轮获取长度，然后reverse后拆成一半，挨个对比
+        int length = 0;
+        ListNode cur = head;
+        while (cur != null) {
+            cur = cur.next;
+            length++;
+        }
+        // TODO: 2020/7/24 直接快慢指针，快的2step，慢的1step，快的结束时，慢的定位到中间位置，直接二分后翻转比较。
+
+        ListNode newHead = null;
+        int index = 0;
+        while (head != null) {
+            ListNode recordHead = head.next;
+            head.next = newHead;
+            newHead = head;
+            head = recordHead;
+            if (++index >= length / 2) {
+                break;
+            }
+        }
+
+        if (length % 2 == 1) {
+            head = head.next;
+        }
+        while (head != null) {
+            if (head.val != newHead.val) {
+                return false;
+            }
+            head = head.next;
+            newHead = newHead.next;
+        }
+        return true;
     }
 }
