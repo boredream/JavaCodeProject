@@ -8,8 +8,25 @@ import com.boredream.entity.ListNode;
 public class LinkedListTest {
 
     public static void main(String[] args) {
-        ListNode nodeA = ListNode.array2nodelist(new Integer[]{1,2});
-        System.out.println(new LinkedListTest().isPalindrome(nodeA));
+//        ListNode nodeA = ListNode.array2nodelist(new Integer[]{9, 8});
+//        ListNode nodeB = ListNode.array2nodelist(new Integer[]{1});
+//        System.out.println(new LinkedListTest().addTwoNumbers(nodeA, nodeB));
+
+        Node node = new Node(1);
+        node.next = new Node(2);
+        node.next.next = new Node(3);
+        node.next.next.next = new Node(4);
+        node.next.next.next.next = new Node(5);
+
+        node.next.next.child = new Node(7);
+        node.next.next.child.next = new Node(8);
+
+        Node result = new LinkedListTest().flatten(node);
+        while (result != null) {
+            System.out.println(result.val);
+            result = result.next;
+        }
+
     }
 
     // 判断是否有循环
@@ -259,5 +276,109 @@ public class LinkedListTest {
             newHead = newHead.next;
         }
         return true;
+    }
+
+    // 合并俩有序链表成新的有序链表
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        if (l1 == null) return l2;
+        if (l2 == null) return l1;
+
+        ListNode node = new ListNode();
+        ListNode cur = node;
+        while (l1 != null && l2 != null) {
+            if (l1.val < l2.val) {
+                cur.next = l1;
+                l1 = l1.next;
+            } else {
+                cur.next = l2;
+                l2 = l2.next;
+            }
+            cur = cur.next;
+        }
+        if (l1 != null) cur.next = l1;
+        else if (l2 != null) cur.next = l2;
+        return node.next;
+    }
+
+    // 合并俩有序链表成新的有序链表
+    public ListNode mergeTwoLists2(ListNode l1, ListNode l2) {
+        // 递归
+        if (l1 == null) return l2;
+        if (l2 == null) return l1;
+        if (l1.val < l2.val) {
+            l1.next = mergeTwoLists2(l1.next, l2);
+            return l1;
+        } else {
+            l2.next = mergeTwoLists2(l1, l2.next);
+            return l2;
+        }
+    }
+
+    // 链表加和。1->2->3 = 321
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        if (l1 == null) return l2;
+        if (l2 == null) return l1;
+        ListNode node = new ListNode();
+        addTwoNumbers(node, l1, l2, 0);
+        return node.next;
+    }
+
+    public void addTwoNumbers(ListNode node, ListNode l1, ListNode l2, int add) {
+        if (l1 == null && l2 == null && add == 0) return;
+        int sum = add;
+        if (l1 != null) sum += l1.val;
+        if (l2 != null) sum += l2.val;
+        node.next = new ListNode(sum % 10);
+        addTwoNumbers(node.next, l1 != null ? l1.next : null, l2 != null ? l2.next : null, sum / 10);
+    }
+
+    // 带child的node，树状装换为大平层
+    static class Node {
+        public Node(int val) {
+            this.val = val;
+        }
+
+        public int val;
+        public Node prev;
+        public Node next;
+        public Node child;
+    }
+
+    // 递归方案
+    public Node flatten(Node head) {
+        flattenTail(head);
+        return head;
+    }
+
+    // 向next or child探索，直到最后一个元素，返回
+    public Node flattenTail(Node head) {
+        if (head == null) return head;
+
+        Node next = head.next;
+        Node child = head.child;
+
+        if (child != null) {
+            // 有child，找到child末尾
+            Node tail = flattenTail(child);
+
+            // 当前和child重连
+            head.next = child;
+            child.prev = head;
+
+            // 如果还有next，将child末尾后面再连上next，然后继续向next探索
+            if(next != null) {
+                tail.next = next;
+                next.prev = tail;
+                return flattenTail(next);
+            }
+
+            return tail;
+        } else {
+            // 没child+没next=末尾
+            if (head.next == null) return head;
+            // 向next探索
+            return flattenTail(head.next);
+        }
+        // TODO: 2020/7/27 非递归方式
     }
 }
