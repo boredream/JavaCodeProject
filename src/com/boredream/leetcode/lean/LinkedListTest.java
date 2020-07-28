@@ -2,31 +2,20 @@ package com.boredream.leetcode.lean;
 
 import com.boredream.entity.ListNode;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * https://leetcode.com/explore/learn/card/linked-list
  */
 public class LinkedListTest {
 
     public static void main(String[] args) {
-//        ListNode nodeA = ListNode.array2nodelist(new Integer[]{9, 8});
 //        ListNode nodeB = ListNode.array2nodelist(new Integer[]{1});
-//        System.out.println(new LinkedListTest().addTwoNumbers(nodeA, nodeB));
-
-        Node node = new Node(1);
-        node.next = new Node(2);
-        node.next.next = new Node(3);
-        node.next.next.next = new Node(4);
-        node.next.next.next.next = new Node(5);
-
-        node.next.next.child = new Node(7);
-        node.next.next.child.next = new Node(8);
-
-        Node result = new LinkedListTest().flatten(node);
-        while (result != null) {
-            System.out.println(result.val);
-            result = result.next;
+        for (int i = 0; i < 11; i++) {
+            ListNode nodeA = ListNode.array2nodelist(new Integer[]{1, 2, 3, 4, 5});
+            System.out.println(new LinkedListTest().rotateRight(nodeA, i));
         }
-
     }
 
     // 判断是否有循环
@@ -333,40 +322,40 @@ public class LinkedListTest {
     }
 
     // 带child的node，树状装换为大平层
-    static class Node {
-        public Node(int val) {
+    static class ChildNode {
+        public ChildNode(int val) {
             this.val = val;
         }
 
         public int val;
-        public Node prev;
-        public Node next;
-        public Node child;
+        public ChildNode prev;
+        public ChildNode next;
+        public ChildNode child;
     }
 
     // 递归方案
-    public Node flatten(Node head) {
+    public ChildNode flatten(ChildNode head) {
         flattenTail(head);
         return head;
     }
 
     // 向next or child探索，直到最后一个元素，返回
-    public Node flattenTail(Node head) {
+    public ChildNode flattenTail(ChildNode head) {
         if (head == null) return head;
 
-        Node next = head.next;
-        Node child = head.child;
+        ChildNode next = head.next;
+        ChildNode child = head.child;
 
         if (child != null) {
             // 有child，找到child末尾
-            Node tail = flattenTail(child);
+            ChildNode tail = flattenTail(child);
 
             // 当前和child重连
             head.next = child;
             child.prev = head;
 
             // 如果还有next，将child末尾后面再连上next，然后继续向next探索
-            if(next != null) {
+            if (next != null) {
                 tail.next = next;
                 next.prev = tail;
                 return flattenTail(next);
@@ -381,4 +370,85 @@ public class LinkedListTest {
         }
         // TODO: 2020/7/27 非递归方式
     }
+
+    static class RandomNode {
+        int val;
+        RandomNode next;
+        RandomNode random;
+
+        public RandomNode(int val) {
+            this.val = val;
+            this.next = null;
+            this.random = null;
+        }
+    }
+
+    // 拷贝node，包含所有next+random关系
+    public RandomNode copyRandomList(RandomNode head) {
+        if (head == null) return null;
+
+        // next简单，如何找random？第一轮记录指向的node index，第二轮再？
+        // TODO: 2020/7/28 借助 hash map ？未复写hash code的默认依据地址生成
+
+        // 原有-新
+        Map<RandomNode, RandomNode> map = new HashMap<>();
+        RandomNode cur = head;
+        while (cur != null) {
+            map.put(cur, new RandomNode(cur.val));
+            cur = cur.next;
+        }
+
+        // 链接
+        cur = head;
+        while (cur != null) {
+            map.get(cur).next = map.get(cur.next);
+            map.get(cur).random = map.get(cur.random);
+            cur = cur.next;
+        }
+
+        return map.get(head);
+
+        // TODO: 2020/7/28 大神解法，所有元素copy后一位，1-2-3 -> 1-1-2-2-3-3，然后 next.random = random.next
+        // https://leetcode.com/explore/learn/card/linked-list/213/conclusion/1229/discuss/43491/A-solution-with-constant-space-complexity-O(1)-and-linear-time-complexity-O(N)
+    }
+
+    // 向后一位循环转动
+    public ListNode rotateRight(ListNode head, int k) {
+        if (head == null || head.next == null || k <= 0) return head;
+        // 找到倒数第k的位置，后半截在前，前半截在后。
+        ListNode slow = head;
+        ListNode fast = head;
+        ListNode last = null;
+        // 1-2-3-4-5 k=2 -> 4-5- 1-2-3
+        // k 可能超过size，则第一轮记录length，再重新跑
+        int length = 0;
+        while (fast != null) {
+            if (k-- < 0) {
+                slow = slow.next;
+            }
+
+            if(fast.next == null) {
+                last = fast;
+            }
+
+            length++;
+            fast = fast.next;
+
+            // 如果到底了，k还没结束，则重头开始，且k取长度余数
+            if(fast == null && k > 0) {
+                k %= length;
+                if(k == 0) break;
+                fast = head;
+            }
+        }
+
+        if(k % length == 0) return head;
+
+        ListNode tail = slow.next;
+        slow.next = null;
+        last.next = head;
+        return tail;
+        // TODO: 2020/7/28 没必要一次循环，先第一轮获取length，然后再第二轮后拼接代码更简略
+    }
+
 }
