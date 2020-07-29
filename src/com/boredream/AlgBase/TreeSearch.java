@@ -92,12 +92,9 @@ public class TreeSearch {
                 node = node.left;
             }
             // 一直到左子树为空，则开始考虑右子树
-            // 如果栈已空，就不需要再考虑
             // 弹出栈顶元素，将游标等于该 节点的右子树
-            if (!treeNodeStack.isEmpty()) {
-                node = treeNodeStack.pop();
-                node = node.right;
-            }
+            node = treeNodeStack.pop();
+            node = node.right;
         }
 
         // 相当于一路向左走，没路过一个节点都打印并缓存
@@ -119,11 +116,9 @@ public class TreeSearch {
                 treeNodeStack.push(node);
                 node = node.left;
             }
-            if (!treeNodeStack.isEmpty()) {
-                node = treeNodeStack.pop();
-                System.out.print(node.val + " ");
-                node = node.right;
-            }
+            node = treeNodeStack.pop();
+            System.out.print(node.val + " ");
+            node = node.right;
         }
 
         // 和前序遍历顺序逻辑一样，只不过打印数据不是在第一次遇到就打印，而是中序的左-根-右顺序
