@@ -15,25 +15,23 @@ public class BinaryTree {
         //    2     6
         //  / \     / \
         // 1   3   5   7
-        TreeNode node = TreeNode.testSort();
+         TreeNode node = TreeNode.testSort();
 
-        List<Integer> preList = new BinaryTree().preorderTraversal(node);
-        List<Integer> inList = new BinaryTree().inorderTraversal(node);
-        int[] preorder = new int[preList.size()];
-        for (int i = 0; i < preList.size(); i++) {
-            preorder[i] = preList.get(i);
-        }
-        int[] inorder = new int[inList.size()];
-        for (int i = 0; i < inList.size(); i++) {
-            inorder[i] = inList.get(i);
-        }
-
-        System.out.println(preList);
-        System.out.println(inList);
-
-        TreeNode treeNode = new BinaryTree().buildTree2(preorder, inorder);
-        System.out.println(node);
-        System.out.println(treeNode);
+        RightNode root = new RightNode();
+        root.val = 4;
+        root.left = new RightNode();
+        root.left.val = 2;
+        root.left.left = new RightNode();
+        root.left.left.val = 1;
+        root.left.right = new RightNode();
+        root.left.right.val = 3;
+        root.right = new RightNode();
+        root.right.val = 6;
+        root.right.left = new RightNode();
+        root.right.left.val = 5;
+        root.right.right = new RightNode();
+        root.right.right.val = 7;
+        System.out.println(new BinaryTree().connect(root));
     }
 
     // 基本功，前中后序的递归or迭代写法
@@ -310,6 +308,82 @@ public class BinaryTree {
         int rightPs = leftPe + 1;
         int rightPe = pe;
         root.right = buildTree2(preorder, rightPs, rightPe, inorder, rightIs, rightIe, numPosMap);
+        return root;
+    }
+
+    static class RightNode {
+        public int val;
+        public RightNode left;
+        public RightNode right;
+        public RightNode next;
+
+        public RightNode() {
+        }
+
+        public RightNode(int _val) {
+            val = _val;
+        }
+    }
+
+    // 满子树，所有的node都加上next链接同一级右侧
+    public RightNode connect(RightNode root) {
+        // 层遍历，从右到左
+        Queue<RightNode> list = new LinkedList<>();
+        list.add(root);
+        RightNode next;
+        while (!list.isEmpty()) {
+            int size = list.size();
+            next = null;
+            for (int i = 0; i < size; i++) {
+                RightNode pop = list.poll();
+                pop.next = next;
+                next = pop;
+                if (pop.right != null) list.add(pop.right);
+                if (pop.left != null) list.add(pop.left);
+            }
+        }
+        return root;
+        // TODO: 2020/7/29 oN 空间。可以优化到 o1
+        // TODO: 2020/7/29 递归方法
+    }
+
+    // 非满子树实现
+    public RightNode connect2(RightNode root) {
+        if(root == null) return null;
+
+        RightNode head = null;
+        RightNode pre = null;
+        RightNode cur = root;
+        while(cur != null) {
+            // 每行扫描的光标
+            while(cur != null) {
+                if(cur.left != null) {
+                    if(pre == null) {
+                        head = cur.left;
+                    } else {
+                        pre.next = cur.left;
+                    }
+                    pre = cur.left;
+                }
+
+                if(cur.right != null) {
+                    if(pre == null) {
+                        head = cur.right;
+                    } else {
+                        pre.next = cur.right;
+                    }
+                    pre = cur.right;
+                }
+
+                cur = cur.next;
+            }
+
+            // 逐行想下找到第一个
+            cur = head;
+            head = null;
+            pre = null;
+        }
+
         return root;
     }
 
