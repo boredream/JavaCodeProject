@@ -15,23 +15,13 @@ public class BinaryTree {
         //    2     6
         //  / \     / \
         // 1   3   5   7
-         TreeNode node = TreeNode.testSort();
-
-        RightNode root = new RightNode();
-        root.val = 4;
-        root.left = new RightNode();
-        root.left.val = 2;
-        root.left.left = new RightNode();
-        root.left.left.val = 1;
-        root.left.right = new RightNode();
-        root.left.right.val = 3;
-        root.right = new RightNode();
-        root.right.val = 6;
-        root.right.left = new RightNode();
-        root.right.left.val = 5;
-        root.right.right = new RightNode();
-        root.right.right.val = 7;
-        System.out.println(new BinaryTree().connect(root));
+        TreeNode node = TreeNode.testSort();
+        node.left.right = null;
+        System.out.println(node);
+        String serialize = new BinaryTree().serialize(node);
+        System.out.println(serialize);
+        TreeNode newNode = new BinaryTree().deserialize(serialize);
+        System.out.println(newNode);
     }
 
     // 基本功，前中后序的递归or迭代写法
@@ -349,16 +339,16 @@ public class BinaryTree {
 
     // 非满子树实现
     public RightNode connect2(RightNode root) {
-        if(root == null) return null;
+        if (root == null) return null;
 
         RightNode head = null;
         RightNode pre = null;
         RightNode cur = root;
-        while(cur != null) {
+        while (cur != null) {
             // 每行扫描的光标
-            while(cur != null) {
-                if(cur.left != null) {
-                    if(pre == null) {
+            while (cur != null) {
+                if (cur.left != null) {
+                    if (pre == null) {
                         head = cur.left;
                     } else {
                         pre.next = cur.left;
@@ -366,8 +356,8 @@ public class BinaryTree {
                     pre = cur.left;
                 }
 
-                if(cur.right != null) {
-                    if(pre == null) {
+                if (cur.right != null) {
+                    if (pre == null) {
                         head = cur.right;
                     } else {
                         pre.next = cur.right;
@@ -386,5 +376,82 @@ public class BinaryTree {
 
         return root;
     }
+
+    // LCA 最近公共祖先。数字不重复
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        // 探底或者找到匹配数字了，返回
+        if (root == null || root == p || root == q) return root;
+        // 左右挨个递归
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+        // 左右都包含child，则当前是公共祖先，否则返回非空的子树
+        if (left != null && right != null) return root;
+        return left != null ? left : right;
+        // TODO: 2020/7/30 不好理解
+    }
+
+    // 序列化二叉树，用层遍历思想
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        if (root == null) return null;
+        StringBuilder sb = new StringBuilder();
+        LinkedList<TreeNode> list = new LinkedList<>();
+        LinkedList<TreeNode> next = new LinkedList<>();
+        list.add(root);
+        while (!list.isEmpty()) {
+            // 注意null也填充到list里
+            int size = list.size();
+            int nullSize = 0;
+            for (int i = 0; i < size; i++) {
+                TreeNode poll = list.poll();
+                sb.append(",").append(poll == null ? "null" : poll.val);
+                TreeNode left = poll == null ? null : poll.left;
+                TreeNode right = poll == null ? null : poll.right;
+                if (left == null) nullSize++;
+                if (right == null) nullSize++;
+                next.add(left);
+                next.add(right);
+            }
+
+            if (nullSize < size * 2) {
+                // child里有非空的，才下一轮
+                list.addAll(next);
+                next.clear();
+            }
+        }
+        return sb.substring(1);
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        if (data == null) return null;
+        TreeNode root = null;
+        LinkedList<TreeNode> levelNode = new LinkedList<>();
+        TreeNode cur = null;
+        boolean left = true;
+        for (String s : data.split(",")) {
+            TreeNode node = null;
+            if (!"null".equals(s)) {
+                node = new TreeNode(Integer.parseInt(s));
+            }
+            if (root == null) {
+                root = node;
+            } else {
+                if (left) {
+                    cur = levelNode.poll();
+                    if (cur != null) cur.left = node;
+                } else {
+                    if (cur != null) cur.right = node;
+                }
+                left = !left;
+            }
+            levelNode.add(node);
+        }
+        return root;
+    }
+
+    // TODO: 2020/7/30 超时。可以直接用前序遍历结构，包含null的处理
+
+
 
 }
