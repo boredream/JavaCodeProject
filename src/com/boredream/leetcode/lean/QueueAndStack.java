@@ -1,6 +1,6 @@
 package com.boredream.leetcode.lean;
 
-import com.boredream.algorithms.base.Hash;
+import com.boredream.entity.ListNode;
 
 import java.util.*;
 
@@ -10,7 +10,7 @@ import java.util.*;
 public class QueueAndStack {
 
     public static void main(String[] args) {
-        System.out.println(new QueueAndStack().numSquares(12));
+        System.out.println(new QueueAndStack().isValid("{[]}"));
     }
 
     static class MyCircularQueue {
@@ -225,6 +225,63 @@ public class QueueAndStack {
             }
         }
         return dp[n];
+    }
+
+    static class MinStack {
+
+        Stack<Integer> stack = new Stack<>();
+        int min = Integer.MAX_VALUE;
+
+        /**
+         * initialize your data structure here.
+         */
+        public MinStack() {
+
+        }
+
+        public void push(int x) {
+            if(x <= min) {
+                stack.push(min);
+                min = x;
+            }
+            stack.push(x);
+        }
+
+        public void pop() {
+            if(min == stack.pop()) min = stack.pop();
+        }
+
+        public int top() {
+            return stack.peek();
+        }
+
+        public int getMin() {
+            return min;
+        }
+
+        // TODO: 2020/8/3 pop 后 min会变化
+    }
+
+    // 是否对称括弧
+    public boolean isValid(String s) {
+        if (s == null || s.length() % 2 == 1) return false;
+        Stack<Character> stack = new Stack<>();
+        for (char c : s.toCharArray()) {
+            // 回头找匹配的
+            if(c == ')') {
+                if(stack.size() == 0) return false;
+                if(stack.pop() != '(') return false;
+            } else if(c == ']') {
+                if(stack.size() == 0) return false;
+                if(stack.pop() != '[') return false;
+            } else if(c == '}') {
+                if(stack.size() == 0) return false;
+                if(stack.pop() != '{') return false;
+            } else {
+                stack.add(c);
+            }
+        }
+        return stack.isEmpty();
     }
 
 }
