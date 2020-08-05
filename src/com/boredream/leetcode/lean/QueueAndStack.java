@@ -1,6 +1,6 @@
 package com.boredream.leetcode.lean;
 
-import com.boredream.entity.ListNode;
+import com.boredream.entity.GraphNode;
 
 import java.util.*;
 
@@ -10,7 +10,12 @@ import java.util.*;
 public class QueueAndStack {
 
     public static void main(String[] args) {
-        System.out.println(new QueueAndStack().isValid("{[]}"));
+        System.out.println(new QueueAndStack().canVisitAllRooms(Arrays.asList(
+                Arrays.asList(1,3),
+                Arrays.asList(3,0,1),
+                Arrays.asList(2),
+                Arrays.asList(0)
+        )));
     }
 
     static class MyCircularQueue {
@@ -240,7 +245,7 @@ public class QueueAndStack {
         }
 
         public void push(int x) {
-            if(x <= min) {
+            if (x <= min) {
                 stack.push(min);
                 min = x;
             }
@@ -248,7 +253,7 @@ public class QueueAndStack {
         }
 
         public void pop() {
-            if(min == stack.pop()) min = stack.pop();
+            if (min == stack.pop()) min = stack.pop();
         }
 
         public int top() {
@@ -268,15 +273,15 @@ public class QueueAndStack {
         Stack<Character> stack = new Stack<>();
         for (char c : s.toCharArray()) {
             // 回头找匹配的
-            if(c == ')') {
-                if(stack.size() == 0) return false;
-                if(stack.pop() != '(') return false;
-            } else if(c == ']') {
-                if(stack.size() == 0) return false;
-                if(stack.pop() != '[') return false;
-            } else if(c == '}') {
-                if(stack.size() == 0) return false;
-                if(stack.pop() != '{') return false;
+            if (c == ')') {
+                if (stack.size() == 0) return false;
+                if (stack.pop() != '(') return false;
+            } else if (c == ']') {
+                if (stack.size() == 0) return false;
+                if (stack.pop() != '[') return false;
+            } else if (c == '}') {
+                if (stack.size() == 0) return false;
+                if (stack.pop() != '{') return false;
             } else {
                 stack.add(c);
             }
@@ -284,4 +289,283 @@ public class QueueAndStack {
         return stack.isEmpty();
     }
 
+    // 多少天后温度会超过今天
+    public int[] dailyTemperatures(int[] T) {
+//        int[] result = new int[T.length];
+//        // 倒着来
+//        int max = Integer.MAX_VALUE;
+//        for (int i = T.length - 1; i >= 0; i--) {
+//            if (T[i] < max) {
+//
+//            }
+//        }
+//
+//        return result;
+        Stack<Integer> stack = new Stack<>();
+        int[] ret = new int[T.length];
+        for (int i = 0; i < T.length; i++) {
+            while (!stack.isEmpty() && T[i] > T[stack.peek()]) {
+                // 新数据比以前的大，就会回头找对应的数据索引，然后set值
+                int idx = stack.pop();
+                ret[idx] = i - idx;
+            }
+            // 一直到循环结束，剩下的一定是比当前大的新加入stack，所以栈里是一个递减的数字
+            stack.push(i);
+        }
+        return ret;
+        // TODO: 2020/8/4 想不到oN时间的
+    }
+
+    // 四则运算栈
+    public int evalRPN(String[] tokens) {
+        // 除法特殊，回退2 / 回退1
+        Stack<Integer> stack = new Stack<>();
+        for (String token : tokens) {
+            switch (token) {
+                case "+":
+                    stack.push(stack.pop() + stack.pop());
+                    break;
+                case "-":
+                    Integer second = stack.pop();
+                    Integer first = stack.pop();
+                    stack.push(first - second);
+                    break;
+                case "*":
+                    stack.push(stack.pop() * stack.pop());
+                    break;
+                case "/":
+                    second = stack.pop();
+                    first = stack.pop();
+                    stack.push(first / second);
+                    break;
+                default:
+                    stack.push(Integer.parseInt(token));
+                    break;
+            }
+        }
+        return stack.pop();
+    }
+
+    // 深拷贝图
+    public GraphNode cloneGraph(GraphNode node) {
+        GraphNode clone = new GraphNode(node.val);
+        HashSet<GraphNode> visited = new HashSet<>();
+        cloneGraph(visited, node, clone);
+        return clone;
+    }
+
+    private void cloneGraph(HashSet<GraphNode> visited, GraphNode node, GraphNode clone) {
+        if (visited.contains(node)) return;
+        visited.add(node);
+        for (GraphNode neighbor : node.neighbors) {
+            GraphNode cloneNeighbor = new GraphNode(neighbor.val);
+            clone.neighbors.add(cloneNeighbor);
+
+            cloneGraph(visited, neighbor, cloneNeighbor);
+        }
+        // TODO: 2020/8/4 visited 访问过应该还是可以访问，要补足邻居
+    }
+
+    // 多少种可能+-nums=S
+    int count = 0;
+
+    public int findTargetSumWays(int[] nums, int S) {
+        findTargetSumWays(nums, S, 0, 0);
+        return count;
+    }
+
+    private void findTargetSumWays(int[] nums, int S, int cur, int position) {
+        if (position == nums.length) {
+            if (cur == S) count++;
+            return;
+        }
+        findTargetSumWays(nums, S, cur + nums[position], position + 1);
+        findTargetSumWays(nums, S, cur - nums[position], position + 1);
+    }
+
+    public int findTargetSumWays2(int[] nums, int S) {
+        // TODO: 2020/8/4 上述方法 oN^2 时间复杂度，忒高
+        // 牵涉到，重复剪枝问题，应该用dp
+
+        // dp
+        // dp[i]代表到S有多少个答案
+        // dp[i] = dp[i-1]
+        return 0;
+    }
+
+    // 栈实现队列
+    class StackQueue {
+
+        Stack<Integer> stack1;
+        Stack<Integer> stack2;
+
+        /**
+         * Initialize your data structure here.
+         */
+        public StackQueue() {
+            stack1 = new Stack<>();
+            stack2 = new Stack<>();
+        }
+
+        /**
+         * Push element x to the back of queue.
+         */
+        public void push(int x) {
+            stack1.push(x);
+        }
+
+        /**
+         * Removes the element from in front of queue and returns that element.
+         */
+        public int pop() {
+            peek();
+            return stack2.pop();
+        }
+
+        /**
+         * Get the front element.
+         */
+        public int peek() {
+            if (stack2.isEmpty()) {
+                while (!stack1.isEmpty()) {
+                    stack2.push(stack1.pop());
+                }
+            }
+            return stack2.peek();
+        }
+
+        /**
+         * Returns whether the queue is empty.
+         */
+        public boolean empty() {
+            return stack1.isEmpty() && stack2.isEmpty();
+        }
+
+        // TODO: 2020/8/5 stack2 非空的时候没必要倒腾
+    }
+
+    // 队列实现栈
+    class QueueStack {
+
+        Queue<Integer> queue;
+
+        /**
+         * Initialize your data structure here.
+         */
+        public QueueStack() {
+            queue = new LinkedList<>();
+        }
+
+        /**
+         * Push element x onto stack.
+         */
+        public void push(int x) {
+            queue.add(x);
+            // TODO: 2020/8/5 除了新加入的，全部都倒过来
+            for (int i = 1; i < queue.size(); i++) {
+                queue.add(queue.remove());
+            }
+        }
+
+        /**
+         * Removes the element on top of the stack and returns that element.
+         */
+        public int pop() {
+            return queue.remove();
+        }
+
+        /**
+         * Get the top element.
+         */
+        public int top() {
+            return queue.peek();
+        }
+
+        /**
+         * Returns whether the stack is empty.
+         */
+        public boolean empty() {
+            return queue.isEmpty();
+        }
+    }
+
+    // 解码 3[a2[c]] = accaccacc
+    public String decodeString(String s) {
+        Stack<Character> stack = new Stack<>();
+        StringBuilder sb;
+        for (int i = s.toCharArray().length - 1; i >= 0; i--) {
+            char c = s.charAt(i);
+            stack.add(c);
+
+            if (Character.isDigit(c) && (i == 0 || !Character.isDigit(s.charAt(i - 1)))) {
+                // 开始结算数字，进行循环
+                int count = 0;
+                while (Character.isDigit(c = stack.pop())) {
+                    count = count * 10 + c - '0';
+                }
+
+                // 往回找循环内容
+                sb = new StringBuilder();
+                while (!stack.isEmpty() && (c = stack.pop()) != ']') {
+                    if (c == '[') continue;
+                    sb.append(c);
+                }
+
+                for (int j = 0; j < count; j++) {
+                    for (int k = sb.length() - 1; k >= 0; k--) {
+                        stack.add(sb.charAt(k));
+                    }
+                }
+            }
+        }
+        sb = new StringBuilder();
+        while (!stack.isEmpty()) {
+            sb.append(stack.pop());
+        }
+        return sb.toString();
+        // TODO: 2020/8/5 通过。但c每次pop再循环后push回去浪费时间。可以正向循环+stack string解决
+    }
+
+    // 将sr、sc坐标的颜色相同链接范围的，都填充为newColor
+    public int[][] floodFill(int[][] image, int sr, int sc, int newColor) {
+        // 类似找小岛的DSF算法
+        if (image[sr][sc] == newColor) return image;
+        floodFill(image, sr, sc, image[sr][sc], newColor);
+        return image;
+    }
+
+    private void floodFill(int[][] image, int sr, int sc, int oldColor, int newColor) {
+        if (sr < 0 || sr >= image.length || sc < 0 || sc >= image[0].length || image[sr][sc] != oldColor) return;
+        image[sr][sc] = newColor;
+        floodFill(image, sr - 1, sc, oldColor, newColor);
+        floodFill(image, sr + 1, sc, oldColor, newColor);
+        floodFill(image, sr, sc - 1, oldColor, newColor);
+        floodFill(image, sr, sc + 1, oldColor, newColor);
+    }
+
+    // 将非0区域数字都改成和最近0的距离
+    public int[][] updateMatrix(int[][] matrix) {
+        // BFS，遇到非0时，寻找四周最小数字，然后+1
+        // TODO: 2020/8/5 递归结束条件？
+        return matrix;
+    }
+
+    // 钥匙开门
+    public boolean canVisitAllRooms(List<List<Integer>> rooms) {
+        Queue<Integer> open = new LinkedList<>();
+        HashSet<Integer> visited = new HashSet<>();
+        open.add(0);
+        visited.add(0);
+        while(!open.isEmpty()) {
+            List<Integer> keys = rooms.get(open.poll());
+            for (Integer key : keys) {
+                if(visited.contains(key)) continue;
+                visited.add(key);
+                open.add(key);
+            }
+        }
+        return visited.size() == rooms.size();
+    }
+
 }
+
