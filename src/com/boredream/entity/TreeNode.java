@@ -18,9 +18,9 @@ public class TreeNode {
     public static TreeNode test() {
         //       8
         //    /    \
-        //   6      10
+        //   6      2
         //  / \     / \
-        // 5   7   9  11
+        // 5   7   3  1
         TreeNode root = new TreeNode();
         root.val = 8;
         root.left = new TreeNode();
@@ -30,11 +30,11 @@ public class TreeNode {
         root.left.right = new TreeNode();
         root.left.right.val = 7;
         root.right = new TreeNode();
-        root.right.val = 10;
+        root.right.val = 2;
         root.right.left = new TreeNode();
-        root.right.left.val = 9;
+        root.right.left.val = 3;
         root.right.right = new TreeNode();
-        root.right.right.val = 11;
+        root.right.right.val = 1;
         return root;
     }
 

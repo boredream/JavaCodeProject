@@ -11,11 +11,8 @@ import java.util.Map;
 public class LinkedListTest {
 
     public static void main(String[] args) {
-//        ListNode nodeB = ListNode.array2nodelist(new Integer[]{1});
-        for (int i = 0; i < 11; i++) {
-            ListNode nodeA = ListNode.array2nodelist(new Integer[]{1, 2, 3, 4, 5});
-            System.out.println(new LinkedListTest().rotateRight(nodeA, i));
-        }
+        ListNode nodeA = ListNode.array2nodelist(new Integer[]{1, 2, 3, 4, 5});
+        System.out.println(new LinkedListTest().reverseList2(nodeA));
     }
 
     // 判断是否有循环
