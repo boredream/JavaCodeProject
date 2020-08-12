@@ -1,12 +1,9 @@
 package com.boredream.leetcode.lean;
 
-import com.boredream.entity.DataFactory;
 import com.boredream.entity.TreeNode;
 import com.boredream.leetcode.util.Method;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.*;
 
 /**
  * https://leetcode.com/explore/learn/card/recursion-ii/
@@ -15,13 +12,14 @@ import java.util.LinkedList;
 public class Recursion2 {
 
     public static void main(String[] args) {
-        char[][] board = DataFactory.createSudoku();
-        DataFactory.printSudoku(board);
-        new Recursion2().solveSudoku(board);
-        DataFactory.printSudoku(board);
+        TreeNode node1 = TreeNode.test();
+        TreeNode node2 = TreeNode.testSort();
+        System.out.println(new Recursion2().levelOrder(node2));
     }
 
-    // 合并排序。分治法。
+    ////////////////////////    分治法    ////////////////////////
+
+    // 合并排序。
     public int[] mergeSort(int[] input) {
         if (input.length <= 1) return input;
         int mid = input.length / 2;
@@ -105,6 +103,7 @@ public class Recursion2 {
                 : searchMatrix(matrix, target, i, j + 1);
     }
 
+    ////////////////////////    回溯法    ////////////////////////
 
     // N皇后问题，n的棋盘一共有几种解。回溯法解决。
     public int totalNQueens(int n) {
@@ -237,7 +236,7 @@ public class Recursion2 {
                             HashSet<Character> full,
                             LinkedList<int[]> empty) {
 
-        if(empty.size() == 0) {
+        if (empty.size() == 0) {
             // 填完了
             return;
         }
@@ -256,7 +255,7 @@ public class Recursion2 {
         int matrixIndex = i / 3 * 3 + j / 3;
         enable.removeAll(banMatrix[matrixIndex]);
 
-        if(enable.size() == 0) {
+        if (enable.size() == 0) {
             // 没有可以获取的数字，回溯
             board[i][j] = '.';
             empty.addFirst(pop);
@@ -280,4 +279,116 @@ public class Recursion2 {
         }
     }
 
+    // 组合。回溯经典实用场景。
+    public List<List<Integer>> combine(int n, int k) {
+        List<List<Integer>> list = new ArrayList<>();
+        combine2(list, new ArrayList<>(), 1, n, k);
+        return list;
+    }
+
+    private void combine(List<List<Integer>> list, List<Integer> group, int n, int k) {
+        if (k == 0) {
+            list.add(new ArrayList<>(group));
+            return;
+        }
+        for (Integer i = 1; i <= n; i++) {
+            group.add(i);
+            combine(list, group, n, k - 1);
+            group.remove(i);
+        }
+        // 排列。组合需要去重。
+    }
+
+    private void combine2(List<List<Integer>> list, List<Integer> group, int start, int n, int k) {
+        if (k == 0) {
+            list.add(new ArrayList<>(group));
+            return;
+        }
+        for (Integer i = start; i <= n; i++) {
+            group.add(i);
+            // 组合，数字不回头。
+            combine2(list, group, i + 1, n, k - 1);
+            group.remove(i);
+        }
+    }
+
+    ////////////////////////    迭代替换递归    ////////////////////////
+
+    // 是否是同一个tree
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        if (p == null && q == null) return true;
+        if (p == null || q == null) return false;
+
+        LinkedList<TreeNode> list = new LinkedList<>();
+        list.addLast(p);
+        list.addLast(q);
+
+        while (!list.isEmpty()) {
+            TreeNode pp = list.removeFirst();
+            TreeNode qq = list.removeFirst();
+            if (pp == null || qq == null || pp.val != qq.val) return false;
+
+            // 双null的不添加
+            if (pp.left != null || qq.left != null) {
+                list.addLast(pp.left);
+                list.addLast(qq.left);
+            }
+            if (pp.right != null || qq.right != null) {
+                list.addLast(pp.right);
+                list.addLast(qq.right);
+            }
+
+        }
+        return true;
+    }
+
+    // n组括弧的组合，需要符合规则。
+    public List<String> generateParenthesis(int n) {
+        List<String> list = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        char[] p = {'(', ')'};
+        int count = n * 2;
+        for (int i = 0; i < count; i++) {
+
+        }
+        return list;
+        // TODO: 2020/8/12 递归无法用回溯法？非回溯法如何解？
+    }
+
+    // 左中右，中序，迭代
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode node = root;
+        while(!stack.isEmpty() || node != null) {
+            while(node != null) {
+                stack.add(node);
+                node = node.left;
+            }
+            TreeNode pop = stack.pop();
+            list.add(pop.val);
+            node = pop.right;
+        }
+        return list;
+    }
+
+    // 层遍历，迭代
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> list = new ArrayList<>();
+        List<Integer> level;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        while(!queue.isEmpty()) {
+            int size = queue.size();
+            level = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                TreeNode poll = queue.poll();
+                level.add(poll.val);
+                if(poll.left != null) queue.add(poll.left);
+                if(poll.right != null) queue.add(poll.right);
+            }
+            list.add(level);
+        }
+        return list;
+    }
 }
