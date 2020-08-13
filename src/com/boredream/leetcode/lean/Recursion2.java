@@ -12,9 +12,7 @@ import java.util.*;
 public class Recursion2 {
 
     public static void main(String[] args) {
-        TreeNode node1 = TreeNode.test();
-        TreeNode node2 = TreeNode.testSort();
-        System.out.println(new Recursion2().levelOrder(node2));
+        System.out.println(new Recursion2().letterCombinations("23"));
     }
 
     ////////////////////////    分治法    ////////////////////////
@@ -360,8 +358,8 @@ public class Recursion2 {
         List<Integer> list = new ArrayList<>();
         Stack<TreeNode> stack = new Stack<>();
         TreeNode node = root;
-        while(!stack.isEmpty() || node != null) {
-            while(node != null) {
+        while (!stack.isEmpty() || node != null) {
+            while (node != null) {
                 stack.add(node);
                 node = node.left;
             }
@@ -378,17 +376,74 @@ public class Recursion2 {
         List<Integer> level;
         Queue<TreeNode> queue = new LinkedList<>();
         queue.add(root);
-        while(!queue.isEmpty()) {
+        while (!queue.isEmpty()) {
             int size = queue.size();
             level = new ArrayList<>();
             for (int i = 0; i < size; i++) {
                 TreeNode poll = queue.poll();
                 level.add(poll.val);
-                if(poll.left != null) queue.add(poll.left);
-                if(poll.right != null) queue.add(poll.right);
+                if (poll.left != null) queue.add(poll.left);
+                if (poll.right != null) queue.add(poll.right);
             }
             list.add(level);
         }
         return list;
     }
+
+    ////////////////////////    总    ////////////////////////
+
+    // 求最大矩阵面积。类似水池蓄水。
+    public int largestRectangleArea(int[] heights) {
+        // TODO: 2020/8/13 答案都看不太懂。。。
+        return -1;
+    }
+
+    // 排列
+    public List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> list = new ArrayList<>();
+        permute(nums, list, new ArrayList<>());
+        return list;
+    }
+
+    private void permute(int[] nums, List<List<Integer>> list, ArrayList<Integer> group) {
+        if (group.size() == nums.length) {
+            list.add(new ArrayList<>(group));
+            return;
+        }
+
+        for (Integer num : nums) {
+            if (group.contains(num)) continue;
+            group.add(num);
+            permute(nums, list, group);
+            group.remove(num);
+        }
+    }
+
+    String[] charmap = {"0",
+            "1", "abc", "def",
+            "ghi", "jkl", "mno",
+            "pqrs", "tuv", "wxyz"};
+
+    // 电话数字对应字母所有组合
+    public List<String> letterCombinations(String digits) {
+        // 组合
+        List<String> list = new ArrayList<>();
+        if(digits == null || digits.length() == 0) return list;
+        letterCombinations(list, digits, new StringBuilder(), 0);
+        return list;
+    }
+
+    private void letterCombinations(List<String> list, String digits, StringBuilder sb, int start) {
+        if (start >= digits.length()) {
+            list.add(sb.toString());
+            return;
+        }
+        int digit = digits.charAt(start) - '0';
+        for (char c : charmap[digit].toCharArray()) {
+            sb.append(c);
+            letterCombinations(list, digits, sb, start + 1);
+            sb.deleteCharAt(sb.length() - 1);
+        }
+    }
+
 }
