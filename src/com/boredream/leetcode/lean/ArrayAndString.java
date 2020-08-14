@@ -1,9 +1,6 @@
 package com.boredream.leetcode.lean;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * https://leetcode.com/explore/learn/card/array-and-string/
@@ -11,9 +8,8 @@ import java.util.List;
 public class ArrayAndString {
 
     public static void main(String[] args) {
-        char[] chars = "12345".toCharArray();
-        new ArrayAndString().reverseString(chars);
-        System.out.println(chars);
+        int[] nums = {2, 3, 1, 2, 4, 3};
+        System.out.println(new ArrayAndString().minSubArrayLen(7, nums));
 
     }
 
@@ -339,4 +335,66 @@ public class ArrayAndString {
             s[end] = c;
         }
     }
+
+    // 凑成一对对，然后求最大的所有min一对之和
+    public int arrayPairSum(int[] nums) {
+        Arrays.sort(nums);
+        int sum = 0;
+        for (int i = 0; i < nums.length; i += 2) sum += nums[i];
+        return sum;
+    }
+
+    // 两数之和。有序数组。
+    public int[] twoSum(int[] numbers, int target) {
+        // 双指针。可能有负数。
+        int[] ret = new int[2];
+        int low = 0;
+        int high = numbers.length - 1;
+        while (low < high) {
+            int sum = numbers[low] + numbers[high];
+            if (sum == target) {
+                ret[0] = low + 1;
+                ret[1] = high + 1;
+                break;
+            }
+            if (sum > target) {
+                // 需要缩小，右指针左移
+                high--;
+            } else {
+                // 需要放大
+                low++;
+            }
+        }
+        return ret;
+        // TODO: 2020/8/14 还可以二分
+    }
+
+    // 删除元素，前移。最后返回删除后长度
+    public int removeElement(int[] nums, int val) {
+        // 双指针。快的一直遍历，慢的记录删除后元素。
+        int low = 0;
+        for (int fast = 0; fast < nums.length; fast++) {
+            if (nums[fast] != val) {
+                nums[low++] = nums[fast];
+            }
+        }
+        return low;
+    }
+
+    // 和>=s的最短连续子集长度
+    public int minSubArrayLen(int s, int[] nums) {
+        int l = 0;
+        int r = 0;
+        int sum = 0;
+        int length = Integer.MAX_VALUE;
+        while (r < nums.length) {
+            sum += nums[r++];
+            while (sum >= s) {
+                length = Math.min(length, r - l);
+                sum -= nums[l++];
+            }
+        }
+        return length == Integer.MAX_VALUE ? 0 : length;
+    }
+
 }
