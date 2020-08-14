@@ -8,9 +8,7 @@ import java.util.*;
 public class ArrayAndString {
 
     public static void main(String[] args) {
-        int[] nums = {2, 3, 1, 2, 4, 3};
-        System.out.println(new ArrayAndString().minSubArrayLen(7, nums));
-
+        System.out.println(new ArrayAndString().reverseWords("   a   b  c d   e  "));
     }
 
     // 左边和与右边和相等的点
@@ -397,4 +395,80 @@ public class ArrayAndString {
         return length == Integer.MAX_VALUE ? 0 : length;
     }
 
+    // 旋转数组。尽量o1空间
+    public void rotate(int[] nums, int k) {
+        // 正常逻辑，右移1，循环k次
+        if (nums.length == 1) return;
+        int move = k % nums.length;
+        if (move == 0) return;
+        int start = 0;
+        int startNum = nums[start];
+        int index = 0;
+        for (int i = 0; i < nums.length; i++) {
+            int next = (index + (nums.length - move)) % nums.length;
+            if (next == start) {
+                // 正好是一个循环
+                nums[index] = startNum;
+                // 前进一位
+                index = next + 1;
+                start = index;
+                startNum = nums[start];
+            } else {
+                nums[index] = nums[next];
+                index = next;
+            }
+        }
+    }
+
+    // 杨辉三角
+    public List<Integer> getRow(int rowIndex) {
+        List<Integer> list = new ArrayList<>();
+        if (rowIndex < 0) return list;
+        for (int i = 1; i < rowIndex; i++) {
+            int size = list.size();
+            list.add(1);
+            for (int j = size - 1; j > 0; j--) {
+                list.set(j, list.get(j) + list.get(j - 1));
+            }
+        }
+        return list;
+    }
+
+    // 翻转单词
+    public String reverseWords(String s) {
+        // 整体reverse，每个词reverse
+        if (s == null || s.length() == 0) return s;
+        StringBuilder sb = new StringBuilder();
+        boolean enableSpace = true;
+        for (char c : s.trim().toCharArray()) {
+            if (c == ' ') {
+                if (enableSpace) {
+                    sb.append(c);
+                }
+                enableSpace = false;
+            } else {
+                sb.append(c);
+                enableSpace = true;
+            }
+        }
+        sb.reverse();
+        String[] split = sb.toString().split(" ");
+        sb = new StringBuilder();
+        for (String word : split) {
+            sb.append(" ").append(new StringBuilder(word).reverse().toString());
+        }
+        return sb.substring(1);
+    }
+
+    // 翻转单词
+    public String reverseWords2(String s) {
+        // 每个词reverse
+        if (s == null || s.length() == 0) return s;
+        String[] split = s.split(" ");
+        StringBuilder sb = new StringBuilder();
+        for (String word : split) {
+            sb.append(" ").append(new StringBuilder(word).reverse().toString());
+        }
+        return sb.substring(1);
+    }
 }
