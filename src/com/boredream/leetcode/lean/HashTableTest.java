@@ -1,5 +1,8 @@
 package com.boredream.leetcode.lean;
 
+import com.boredream.entity.DataFactory;
+import com.boredream.entity.TreeNode;
+
 import java.util.*;
 
 /**
@@ -8,7 +11,7 @@ import java.util.*;
 public class HashTableTest {
 
     public static void main(String[] args) {
-        System.out.println(new HashTableTest().groupAnagrams2(new String[]{"eat", "tea", "tan", "ate", "nat", "bat"}));
+        System.out.println(new HashTableTest().lengthOfLongestSubstring("tmmzuxt"));
 
     }
 
@@ -264,7 +267,7 @@ public class HashTableTest {
             for (int i = 0; i < str.length(); i++) {
                 hash += Math.pow(26, i) + (str.charAt(i) - 'a');
             }
-            if(map[hash] == null) {
+            if (map[hash] == null) {
                 map[hash] = new LinkedList<>();
                 list.add(map[hash]);
             }
@@ -285,7 +288,7 @@ public class HashTableTest {
             }
             String hash = String.valueOf(chars);
             List<String> group = map.get(hash);
-            if(group == null) {
+            if (group == null) {
                 group = new LinkedList<>();
                 map.put(hash, group);
                 list.add(group);
@@ -296,4 +299,119 @@ public class HashTableTest {
         // TODO: 2020/8/18 Math.pow(26, i) 才是map的容量，太大了。
     }
 
+    // 是否符合数独规则
+    public boolean isValidSudoku(char[][] board) {
+        // 全部循环挨个add，横竖小块都作为一组，只要同一组出现俩一样数字就不符合
+        HashMap<String, HashSet<Character>> map = new HashMap<>();
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                if (board[i][j] == '.') continue;
+                String row = "row" + i;
+                String col = "col" + j;
+                String block = "block" + (j / 3 * 3 + i / 3);
+
+                HashSet<Character> rowMap = map.get(row);
+                if (rowMap == null) {
+                    rowMap = new HashSet<>();
+                    map.put(row, rowMap);
+                } else if (rowMap.contains(board[i][j])) {
+                    return false;
+                }
+                rowMap.add(board[i][j]);
+
+                HashSet<Character> colMap = map.get(col);
+                if (colMap == null) {
+                    colMap = new HashSet<>();
+                    map.put(col, colMap);
+                } else if (colMap.contains(board[i][j])) {
+                    return false;
+                }
+                colMap.add(board[i][j]);
+
+                HashSet<Character> blockMap = map.get(block);
+                if (blockMap == null) {
+                    blockMap = new HashSet<>();
+                    map.put(block, blockMap);
+                } else if (blockMap.contains(board[i][j])) {
+                    return false;
+                }
+                blockMap.add(board[i][j]);
+            }
+        }
+        return true;
+    }
+
+    // 找到重复子树
+    public List<TreeNode> findDuplicateSubtrees(TreeNode root) {
+        List<TreeNode> list = new LinkedList<>();
+        // key作为子树结构打印，TreeNode是子树root
+        HashMap<String, TreeNode> map = new HashMap<>();
+        // 需要记录所有结点的子树情况，如何遍历？后续左右中？
+        findDuplicateSubtrees(root, map, new StringBuilder());
+        return list;
+    }
+
+    private void findDuplicateSubtrees(TreeNode root, HashMap<String, TreeNode> map, StringBuilder sb) {
+        if (root == null) {
+            sb.append(",null");
+            return;
+        }
+        findDuplicateSubtrees(root.left, map, sb);
+        findDuplicateSubtrees(root.right, map, sb);
+        sb.append(",").append(root.val);
+        String hash = sb.toString();
+        map.put(hash, root);
+        // TODO: 2020/8/18 思路正确，如何让子树拼成的字符串一层层构建保存是个问题。现在这样一个sb会互相影响。
+    }
+
+    public List<TreeNode> findDuplicateSubtrees2(TreeNode root) {
+        List<TreeNode> list = new LinkedList<>();
+        findDuplicateSubtrees2(root, new HashMap<>(), list);
+        return list;
+    }
+
+    private String findDuplicateSubtrees2(TreeNode root, HashMap<String, Integer> map, List<TreeNode> list) {
+        if (root == null) {
+            return "#";
+        }
+        String left = findDuplicateSubtrees2(root.left, map, list);
+        String right = findDuplicateSubtrees2(root.right, map, list);
+        String hash = left + "," + right + "," + root.val;
+        Integer old = map.getOrDefault(hash, 0);
+        if (old == 1) list.add(root);
+        map.put(hash, old + 1);
+        return hash;
+    }
+
+    // 石头里找宝石
+    public int numJewelsInStones(String J, String S) {
+        HashSet<Character> set = new HashSet<>();
+        int count = 0;
+        for (int i = 0; i < J.length(); i++) {
+            set.add(J.charAt(i));
+        }
+        for (int i = 0; i < S.length(); i++) {
+            if (set.contains(S.charAt(i))) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    // 最长非重复子串长度
+    public int lengthOfLongestSubstring(String s) {
+        HashMap<Character, Integer> map = new HashMap<>();
+        int length = 0;
+        int start = 0;
+        for (int i = 0; i < s.length(); i++) {
+            Integer oldPos = map.get(s.charAt(i));
+            if (oldPos != null) {
+                // TODO: 2020/8/18 start的更新不一定总是oldPos+1
+                start = Math.max(start, oldPos + 1);
+            }
+            length = Math.max(length, i - start + 1);
+            map.put(s.charAt(i), i);
+        }
+        return length;
+    }
 }
