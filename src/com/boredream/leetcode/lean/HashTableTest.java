@@ -1,6 +1,5 @@
 package com.boredream.leetcode.lean;
 
-import com.boredream.entity.DataFactory;
 import com.boredream.entity.TreeNode;
 
 import java.util.*;
@@ -11,7 +10,7 @@ import java.util.*;
 public class HashTableTest {
 
     public static void main(String[] args) {
-        System.out.println(new HashTableTest().lengthOfLongestSubstring("tmmzuxt"));
+        System.out.println(Arrays.toString(new HashTableTest().topKFrequent2(new int[]{1,2,2}, 1)));
 
     }
 
@@ -414,4 +413,69 @@ public class HashTableTest {
         }
         return length;
     }
+
+    // 4数之和0，多少种
+    public int fourSumCount(int[] A, int[] B, int[] C, int[] D) {
+        int count = 0;
+        HashMap<Integer, Integer> map = new HashMap<>();
+        // 转变成2数之和
+        for (int i = 0; i < A.length; i++) {
+            for (int j = 0; j < B.length; j++) {
+                int sum = A[i] + B[j];
+                map.put(sum, map.getOrDefault(sum, 0) + 1);
+            }
+        }
+        for (int i = 0; i < C.length; i++) {
+            for (int j = 0; j < D.length; j++) {
+                int sum = C[i] + D[j];
+                count += map.getOrDefault(-sum, 0);
+            }
+        }
+        return count;
+    }
+
+    // kth频率出现的数字
+    public int[] topKFrequent(int[] nums, int k) {
+        // 统计频率
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int num : nums) {
+            map.put(num, map.getOrDefault(num, 0) + 1);
+        }
+
+        // 顺序保存频率数字
+        TreeMap<Integer, Integer> tree = new TreeMap<>();
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            tree.put(entry.getValue(), entry.getKey());
+        }
+
+        // 提取kth
+        int[] ret = new int[k];
+        for (int i = 0; i < k; i++) {
+            ret[i] = tree.pollLastEntry().getValue();
+        }
+        return ret;
+        // TODO: 2020/8/18 同频率的在tree里会因为key冲突挤掉
+        // TODO: 2020/8/18 还可以使用快速排序，快排是解决kth问题的常用方法
+    }
+
+    public int[] topKFrequent2(int[] nums, int k) {
+        // 统计频率
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int num : nums) {
+            map.put(num, map.getOrDefault(num, 0) + 1);
+        }
+
+        // 顺序保存频率数字
+        PriorityQueue<Integer> queue = new PriorityQueue<>((o1, o2)
+                -> Integer.compare(map.get(o2), map.get(o1)));
+        queue.addAll(map.keySet());
+
+        // 提取kth
+        int[] ret = new int[k];
+        for (int i = 0; i < k; i++) {
+            ret[i] = queue.poll();
+        }
+        return ret;
+    }
+
 }
