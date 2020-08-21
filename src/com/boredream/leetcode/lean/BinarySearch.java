@@ -1,7 +1,6 @@
 package com.boredream.leetcode.lean;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * https://leetcode.com/explore/learn/card/binary-search
@@ -11,7 +10,7 @@ public class BinarySearch {
 
     public static void main(String[] args) {
         BinarySearch search = new BinarySearch();
-        System.out.println(search.findMin2(new int[]{3,1,3,3,3}));
+        System.out.println(search.smallestDistancePair(new int[]{3, 1, 3, 4, 2}, 1));
     }
 
     //////////////////////// while l <= r //////////////////////////
@@ -342,13 +341,13 @@ public class BinarySearch {
         int r = end;
         while (l < r) {
             int mid = l + (r - l) / 2;
-            if(nums[mid] > nums[r]) {
+            if (nums[mid] > nums[r]) {
                 // 右边有旋转
                 l = mid + 1;
-            } else if(nums[mid] < nums[r]) {
+            } else if (nums[mid] < nums[r]) {
                 // 左边旋转or正常
                 r = mid;
-            } else if(nums[mid] > nums[l]) {
+            } else if (nums[mid] > nums[l]) {
                 // l < mid = r
                 r = mid;
             } else {
@@ -356,16 +355,84 @@ public class BinarySearch {
 //                // 两边都可能，递归
 //                return Math.min(findMin2(nums, l, mid), findMin2(nums, mid, r));
                 // TODO: 2020/8/20 简单点
-                l ++;
-                r --;
+                l++;
+                r--;
             }
         }
         return nums[l];
     }
 
-    // 找交集
-    public int[] intersection(int[] nums1, int[] nums2) {
-        return null;
+    // 找重复数字。o1空间。数组只读。只有一个重复数字>=2次。数字范围1~n
+    public int findDuplicate(int[] nums) {
+        // 数字作为索引跳。重复数字会重复
+        int fast = nums[0];
+        int slow = nums[0];
+        do {
+            fast = nums[nums[fast]];
+            slow = nums[slow];
+        } while (nums[fast] != nums[slow]);
+        // TODO: 2020/8/21 这样只代表又换。重复数字应该是进入环的开始点
+//        return nums[slow];
+
+        slow = nums[0];
+        while (slow != fast) {
+            slow = nums[slow];
+            fast = nums[fast];
+        }
+        return slow;
     }
 
+    // 找俩有序数组的中间数
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        if (nums1.length == 0 && nums2.length == 0) return 0;
+
+        // 只有一边有数据，直接取其中位数
+        int[] nums = null;
+        if (nums1.length == 0) {
+            nums = nums2;
+        } else if (nums2.length == 0) {
+            nums = nums1;
+        }
+        if (nums != null) {
+            int mid = nums.length / 2;
+            if (nums.length % 2 == 1) {
+                return nums[mid];
+            } else {
+                return 0.5d * (nums[mid] + nums[mid + 1]);
+            }
+        }
+
+        int l = 0;
+        int r = 0;
+        if (nums1[nums1.length - 1] < nums2[0]) {
+            // nums1 < nums2
+            nums = nums2;
+            r = nums2.length - nums1.length;
+        } else if (nums1[0] > nums2[nums2.length - 1]) {
+            // nums1 > nums2
+
+        } else {
+            // nums1 | nums2
+            // TODO: 2020/8/21 交叉情况过于复杂。
+        }
+
+        return 0;
+    }
+
+    // 第k小的两数字之差
+    public int smallestDistancePair(int[] nums, int k) {
+        // sort
+        Arrays.sort(nums);
+        // k-th
+        PriorityQueue<Integer> queue = new PriorityQueue<>();
+        for (int i = 1; i < nums.length; i++) {
+            int distance = nums[i] - nums[i - 1];
+            queue.add(distance);
+        }
+        for (int i = 0; i < k - 1; i++) {
+            queue.poll();
+        }
+        return queue.poll();
+        // TODO: 2020/8/21 这种是n-1个差值，其实是22组合个差值
+    }
 }
