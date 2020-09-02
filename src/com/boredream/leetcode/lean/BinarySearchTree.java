@@ -1,9 +1,12 @@
 package com.boredream.leetcode.lean;
 
+import com.boredream.entity.DataFactory;
 import com.boredream.entity.TreeNode;
 
 import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Stack;
+import java.util.TreeSet;
 
 /**
  * https://leetcode.com/explore/learn/card/introduction-to-data-structure-binary-search-tree
@@ -11,12 +14,7 @@ import java.util.Stack;
 public class BinarySearchTree {
 
     public static void main(String[] args) {
-        KthLargest kthLargest = new KthLargest(1, new int[]{});
-        System.out.println(kthLargest.add(-3));
-        System.out.println(kthLargest.add(-2));
-        System.out.println(kthLargest.add(-4));
-        System.out.println(kthLargest.add(0));
-        System.out.println(kthLargest.add(4));
+        System.out.println(new BinarySearchTree().sortedArrayToBST(new int[]{-10, -3, 0, 5, 9}));
     }
 
     // BST迭代器。操作都要求o1
@@ -260,4 +258,79 @@ public class BinarySearchTree {
         }
         return null;
     }
+
+    // 是否存在数值差<=t 且索引差<=k 的值
+    public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
+        if (nums == null || nums.length < 2 || k < 1) return false;
+        TreeSet<Integer> set = new TreeSet<>();
+        for (int i = 0; i < nums.length; i++) {
+            // floor = 比x小的最大数
+            Integer floor = set.floor(nums[i]);
+            // ceiling = 比x大的最小数
+            Integer ceil = set.ceiling(nums[i]);
+            // the tricky part I modified to easily understood way.
+            if ((floor != null && nums[i] - floor <= t) ||
+                    (ceil != null && ceil - nums[i] <= t))
+                return true;
+
+            set.add(nums[i]);
+
+            if (i >= k)
+                // TODO: 2020/9/2 精华~ 如果i>=k还没有return true，代表i-k之前的都不满足，及时后面有满足的，也超过k距离了
+                set.remove(nums[i - k]);
+
+        }
+        return false;
+    }
+
+    // 是否是平衡树（所有叶节点高度差<=1）
+    public boolean isBalanced(TreeNode root) {
+        if(root == null) return true;
+
+        // 层遍历
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+
+        int level = 1;
+        Integer minHeight = null;
+        while(!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                TreeNode poll = queue.poll();
+                if(poll.left != null) queue.add(poll.left);
+                if(poll.right != null) queue.add(poll.right);
+            }
+
+            level ++;
+            int levelMax = (int) Math.pow(2, level - 1);
+            if(queue.size() < levelMax) {
+                // 不满一层
+                if (minHeight == null) {
+                    minHeight = level;
+                } else {
+                    if (level - minHeight > 1) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+        // TODO: 2020/9/2 题目理解错误，应该是任意结点的左右子节点的高度差都不能超过1
+    }
+
+    // 有序数组转平衡二叉树
+    public TreeNode sortedArrayToBST(int[] nums) {
+        if(nums == null || nums.length == 0) return null;
+        return sortedArrayToBST( nums, 0, nums.length - 1);
+    }
+
+    public TreeNode sortedArrayToBST(int[] nums, int start, int end) {
+        if(start > end) return null;
+        int mid = start + (end - start) / 2;
+        TreeNode root = new TreeNode(nums[mid]);
+        root.left = sortedArrayToBST( nums, start, mid - 1);
+        root.right = sortedArrayToBST( nums, mid + 1, end);
+        return root;
+    }
+
 }
