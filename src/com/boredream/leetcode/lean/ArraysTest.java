@@ -11,7 +11,7 @@ import java.util.TreeSet;
 public class ArraysTest {
 
     public static void main(String[] args) {
-        int[] nums = {4, 3, 2, 7, 8, 2, 3, 1};
+        int[] nums = {4,3,2,7,8,2,3,1};
         System.out.println(new ArraysTest().findDisappearedNumbers(nums));
         System.out.println(java.util.Arrays.toString(nums));
     }
@@ -188,7 +188,15 @@ public class ArraysTest {
             if (!leftUp && !rightUp) break;
         }
         return low != 0 && high != A.length - 1 && low == high;
-        // TODO 俩while可以分开，不用while里判断break，时间复杂度不变
+    }
+
+    public boolean validMountainArray2(int[] A) {
+        if (A == null || A.length < 3) return false;
+        int l = 0;
+        while (l < A.length - 1 && A[l + 1] > A[l]) l++;
+        int r = A.length - 1;
+        while (r > 0 && A[r] < A[r - 1]) r--;
+        return l == r && l != 0 && r != A.length - 1;
     }
 
     // 每个数字都替换成右边所有数中最大的，最后一个-1
@@ -229,7 +237,6 @@ public class ArraysTest {
             A[high] = temp;
         }
         return A;
-        // TODO: 2020/7/13 也可以直接冒泡方式，左到右for循环，奇偶交换
     }
 
     // 排序前后有多少个数字不同
@@ -291,17 +298,15 @@ public class ArraysTest {
         return max;
     }
 
-    // 找到最大最小数字间未出现的数字。时间 O(N) + 无额外空间
+    // 找到最大最小数字间未出现的数字。时间 O(N) + 无额外空间。1~n个数字放在n长度的数组上
     public List<Integer> findDisappearedNumbers(int[] nums) {
-        // TODO: 2020/7/14 不使用额外空间，直接利用已有数组nums，数字值映射到索引，然后用负数不破坏原有数字进行标记，最后再次遍历找到未标记的数字，其索引就是目标
         List<Integer> ret = new ArrayList<>();
-        for (int i = 0; i < nums.length; i++) {
-            int val = Math.abs(nums[i]) - 1;
-            if (nums[val] > 0) {
-                nums[val] = -nums[val];
+        for (int num : nums) {
+            int index = Math.abs(num) - 1;
+            if (nums[index] > 0) {
+                nums[index] = -nums[index];
             }
         }
-
         for (int i = 0; i < nums.length; i++) {
             if (nums[i] > 0) {
                 ret.add(i + 1);

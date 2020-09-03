@@ -11,8 +11,132 @@ import java.util.Map;
 public class LinkedListTest {
 
     public static void main(String[] args) {
-        ListNode nodeA = ListNode.array2nodelist(new Integer[]{1, 2, 3, 4, 5});
-        System.out.println(new LinkedListTest().reverseList2(nodeA));
+        for (int i = 0; i < 10; i++) {
+            ListNode node = ListNode.array2nodelist(new Integer[]{1, 2, 3, 4, 5, 6});
+            System.out.println(new LinkedListTest().rotateRight(node, i));
+        }
+    }
+
+    static class MyLinkedList {
+        class Node {
+            int val;
+            Node next;
+
+            public Node(int val) {
+                this.val = val;
+            }
+        }
+
+        @Override
+        public String toString() {
+            Node node = head;
+            StringBuilder sb = new StringBuilder();
+            while (node != null) {
+                sb.append("->").append(node.val);
+                node = node.next;
+            }
+            return sb.toString();
+        }
+
+        private Node head;
+        private Node tail;
+        private int size;
+
+        /**
+         * Initialize your data structure here.
+         */
+        public MyLinkedList() {
+
+        }
+
+        /**
+         * Get the value of the index-th node in the linked list. If the index is invalid, return -1.
+         */
+        public int get(int index) {
+            if (index >= size) return -1;
+            if (index == size - 1) return tail.val;
+
+            Node current = head;
+            for (int i = 0; i < index; i++) {
+                current = current.next;
+            }
+            return current.val;
+        }
+
+        /**
+         * Add a node of value val before the first element of the linked list. After the insertion, the new node will be the first node of the linked list.
+         */
+        public void addAtHead(int val) {
+            if (head == null) {
+                head = new Node(val);
+                tail = head;
+            } else {
+                Node prev = head;
+                head = new Node(val);
+                head.next = prev;
+            }
+            size++;
+        }
+
+        /**
+         * Append a node of value val to the last element of the linked list.
+         */
+        public void addAtTail(int val) {
+            if (tail == null) {
+                tail = new Node(val);
+                head = tail;
+            } else {
+                tail.next = new Node(val);
+                tail = tail.next;
+            }
+            size++;
+        }
+
+        /**
+         * Add a node of value val before the index-th node in the linked list. If index equals to the length of linked list, the node will be appended to the end of linked list. If index is greater than the length, the node will not be inserted.
+         */
+        public void addAtIndex(int index, int val) {
+            if (index > size) return;
+            if (index == 0) {
+                addAtHead(val);
+            } else if (index == size) {
+                addAtTail(val);
+            } else {
+                size++;
+                Node current = head;
+                for (int i = 0; i < index - 1; i++) {
+                    current = current.next;
+                }
+                Node node = new Node(val);
+                node.next = current.next;
+                current.next = node;
+            }
+        }
+
+        /**
+         * Delete the index-th node in the linked list, if the index is valid.
+         */
+        public void deleteAtIndex(int index) {
+            if (index >= size) return;
+            if (index == 0) {
+                head = head.next;
+            } else {
+                Node current = head;
+                for (int i = 0; i < index - 1; i++) {
+                    current = current.next;
+                }
+                current.next = current.next.next;
+                if (index == size - 1) {
+                    tail = current;
+                }
+            }
+
+            size--;
+            if (size == 0) {
+                head = null;
+                tail = null;
+            }
+        }
     }
 
     // 判断是否有循环
@@ -100,18 +224,20 @@ public class LinkedListTest {
         if (n <= 0) return head;
         ListNode fast = head;
         ListNode slow = head;
-        int length = 0;
-        while (fast != null) {
+
+        for (int i = 0; i < n; i++) {
+            if (fast == null) return head;
             fast = fast.next;
-            if (length++ > n) {
-                slow = slow.next;
-            }
         }
-        if (n > length) return head;
-        if (n == length) return head.next;
+
+        if (fast == null) return head.next;
+
+        while (fast.next != null) {
+            fast = fast.next;
+            slow = slow.next;
+        }
         slow.next = slow.next.next;
         return head;
-        // TODO: 2020/7/22 可以不用length，先让fast先跑n，如果n超过length可以直接处理
     }
 
     // 翻转链表
@@ -141,32 +267,42 @@ public class LinkedListTest {
 
     // 翻转链表
     public ListNode reverseList1(ListNode head) {
-        // TODO: 2020/7/22 网上方案，直接交换head和头部，然后head后移。我自己的方案是交换head.next和head
-        // 教程思路，head不停的和next替换，交换后指向next.next，交换的next放到头部
-        ListNode preHead = null;
+        ListNode pre = null;
         while (head != null) {
-            // 记录head尾巴
-            ListNode recordHead = head.next;
-            // 将head交换到新头部，然后连接原有的头部作为尾巴，产生新头部
-            // 第一次比较特殊，原有头部是null，所以只把第一个head数字截出来作为尾巴
-            head.next = preHead;
-            preHead = head;
-            // 原有head后移一位
-            head = recordHead;
+            ListNode next = head.next;
+            head.next = pre;
+            pre = head;
+            head = next;
         }
-        return preHead;
+        return pre;
     }
 
-    // 翻转链表
     public ListNode reverseList2(ListNode head) {
-        // TODO: 2020/7/22 网上方案，递归方案
-        // TODO: 2020/7/22 暂时不理解
+        // 如果null或者单独一个元素，则翻转结果就是自己
         if (head == null || head.next == null) return head;
-        ListNode nextNode = head.next;
-        ListNode newHead = reverseList2(nextNode);
-        nextNode.next = head;
+        // 1->2345
+        // 先记录原始next 2->345
+        ListNode next = head.next;
+        // next的翻转结果 5->432
+        ListNode newHead = reverseList2(next);
+        // 原next指向当前head 2->1->xxx
+        newHead.next = head;
+        // 1->null
         head.next = null;
+        // 5->432->1->null
         return newHead;
+    }
+
+    public ListNode reverseList3(ListNode head) {
+        // 尾递归方式
+        return reverseList3(null, head);
+    }
+
+    private ListNode reverseList3(ListNode pre, ListNode head) {
+        if (head == null) return pre;
+        ListNode next = head.next;
+        head.next = pre;
+        return reverseList3(head, next);
     }
 
     // 删除所有val值的node
@@ -187,20 +323,14 @@ public class LinkedListTest {
         return head;
     }
 
-    // 删除所有val值的node
     public ListNode removeElements1(ListNode head, int val) {
-        ListNode pre = new ListNode();
-        pre.next = head;
-        ListNode cur = pre;
-        while (cur.next != null) {
-            if (cur.next.val == val) {
-                cur.next = cur.next.next;
-            } else {
-                cur = cur.next;
-            }
+        if (head == null) return null;
+        if (head.val == val) {
+            return removeElements1(head.next, val);
+        } else {
+            head.next = removeElements1(head.next, val);
+            return head;
         }
-        return pre.next;
-        // TODO: 2020/7/22 还有递归方式
     }
 
     // 重组数组，让奇数位在前，偶数位在后（第几位的奇偶，不是val值的奇偶）。oN时间 + o1空间
@@ -291,7 +421,7 @@ public class LinkedListTest {
         // 递归
         if (l1 == null) return l2;
         if (l2 == null) return l1;
-        if (l1.val < l2.val) {
+        if(l1.val < l2.val) {
             l1.next = mergeTwoLists2(l1.next, l2);
             return l1;
         } else {
@@ -415,37 +545,35 @@ public class LinkedListTest {
         // 找到倒数第k的位置，后半截在前，前半截在后。
         ListNode slow = head;
         ListNode fast = head;
-        ListNode last = null;
         // 1-2-3-4-5 k=2 -> 4-5- 1-2-3
         // k 可能超过size，则第一轮记录length，再重新跑
-        int length = 0;
-        while (fast != null) {
-            if (k-- < 0) {
-                slow = slow.next;
-            }
-
-            if(fast.next == null) {
-                last = fast;
-            }
-
-            length++;
+        int length = 1;
+        while (fast.next != null) {
+            length ++;
             fast = fast.next;
+        }
+        ListNode last = fast;
 
-            // 如果到底了，k还没结束，则重头开始，且k取长度余数
-            if(fast == null && k > 0) {
-                k %= length;
-                if(k == 0) break;
-                fast = head;
-            }
+        // 取余数
+        k = k % length;
+        if (k == 0) return head;
+
+        // fast先跑k
+        fast = head;
+        for (int i = 0; i < k; i++) {
+            fast = fast.next;
         }
 
-        if(k % length == 0) return head;
+        // 一起跑到底，slow则为分界线
+        while(fast.next != null) {
+            fast = fast.next;
+            slow = slow.next;
+        }
 
         ListNode tail = slow.next;
         slow.next = null;
         last.next = head;
         return tail;
-        // TODO: 2020/7/28 没必要一次循环，先第一轮获取length，然后再第二轮后拼接代码更简略
     }
 
 }
