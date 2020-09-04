@@ -295,7 +295,6 @@ public class HashTableTest {
             group.add(str);
         }
         return list;
-        // TODO: 2020/8/18 Math.pow(26, i) 才是map的容量，太大了。
     }
 
     // 是否符合数独规则

@@ -28,6 +28,10 @@ public class ListNode {
         }
     }
 
+    public static ListNode mock() {
+        return array2nodelist(new Integer[]{1,2,3,4,5,6,7});
+    }
+
     public static ListNode array2nodelist(Integer[] array) {
         ListNode nextNode = null;
         for (int i = array.length - 1; i >= 0; i--) {

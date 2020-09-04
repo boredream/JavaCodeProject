@@ -198,7 +198,6 @@ public class ArrayAndString {
             }
         }
         return list;
-        // TODO: 2020/8/13 爱的魔力转圈圈
     }
 
     public List<Integer> spiralOrder2(int[][] matrix) {

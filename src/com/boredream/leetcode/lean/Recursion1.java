@@ -11,11 +11,7 @@ import java.util.*;
 public class Recursion1 {
 
     public static void main(String[] args) {
-        List<TreeNode> list = new Recursion1().generateTrees(3);
-        for (TreeNode treeNode : list) {
-            System.out.println(treeNode);
-            System.out.println();
-        }
+        System.out.println(new Recursion1().swapPairs(ListNode.mock()));
     }
 
     public void reverseString(char[] s) {
@@ -33,23 +29,15 @@ public class Recursion1 {
 
     // 两两交换
     public ListNode swapPairs(ListNode head) {
-        if (head == null || head.next == null) return head;
-
-        // swap
-        ListNode newHead = head.next;
-        head.next = head.next.next;
-        newHead.next = head;
-
-        // recursion
-        newHead.next.next = swapPairs(newHead.next.next);
-
-        return newHead;
-        // TODO: 2020/8/6 swap 和 recursion 可以结合
+        if(head == null || head.next == null) return head;
+        ListNode next = head.next;
+        head.next = swapPairs(next.next);
+        next.next = head;
+        return next;
     }
 
     // 翻转链表
     public ListNode reverseList(ListNode head) {
-        // TODO: 2020/8/6 不交换，head一直next向后，然后前面截断，一个一个插入到新node里，最终返回
         return reverseList(head, null);
     }
 
@@ -150,8 +138,15 @@ public class Recursion1 {
 
     // 合并俩有序数组
     public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
-        // TODO: 2020/8/7 递归方式想不到
-        return null;
+        if (l1 == null) return l2;
+        if (l2 == null) return l1;
+        if(l1.val < l2.val) {
+            l1.next = mergeTwoLists(l1.next, l2);
+            return l1;
+        } else {
+            l2.next = mergeTwoLists(l1, l2.next);
+            return l2;
+        }
     }
 
     // 开始0。然后每轮0->01 / 1->10的变化。N轮后第K个数是几？
