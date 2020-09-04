@@ -10,12 +10,7 @@ import java.util.*;
 public class QueueAndStack {
 
     public static void main(String[] args) {
-        System.out.println(new QueueAndStack().canVisitAllRooms(Arrays.asList(
-                Arrays.asList(1,3),
-                Arrays.asList(3,0,1),
-                Arrays.asList(2),
-                Arrays.asList(0)
-        )));
+        System.out.println(new QueueAndStack().decodeString2("2[abc]3[cd]ef"));
     }
 
     static class MyCircularQueue {
@@ -120,7 +115,7 @@ public class QueueAndStack {
         }
 
         return c;
-        // TODO: 2020/7/30 全部遍历，遇到1的时候开始向四周 BFS，如果是连接的陆地，继续探同时将此陆地改为已探索状态
+        // TODO: 2020/7/30 全部遍历，遇到1的时候开始向四周 DFS，如果是连接的陆地，继续探同时将此陆地改为已探索状态
     }
 
     private void checkWater(char[][] grid, int i, int j) {
@@ -198,6 +193,7 @@ public class QueueAndStack {
             for (int i = 0; i < size; i++) {
                 Integer oldNum = queue.poll();
                 for (int j = 1; j * j <= n; j++) {
+                    // 罗列所有count个数的可能组成之和
                     int newNum = oldNum + j * j;
                     if (newNum == n) return count;
                     if (newNum > n) break;
@@ -234,8 +230,7 @@ public class QueueAndStack {
 
     static class MinStack {
 
-        Stack<Integer> stack = new Stack<>();
-        int min = Integer.MAX_VALUE;
+        // 难点在于pop等操作后min会变化
 
         /**
          * initialize your data structure here.
@@ -245,26 +240,20 @@ public class QueueAndStack {
         }
 
         public void push(int x) {
-            if (x <= min) {
-                stack.push(min);
-                min = x;
-            }
-            stack.push(x);
         }
 
         public void pop() {
-            if (min == stack.pop()) min = stack.pop();
         }
 
         public int top() {
-            return stack.peek();
+            return -1;
         }
 
         public int getMin() {
-            return min;
+            return -1;
         }
 
-        // TODO: 2020/8/3 pop 后 min会变化
+        // TODO: 2020/9/4 给每次push记录俩信息，元素和min
     }
 
     // 是否对称括弧
@@ -291,29 +280,21 @@ public class QueueAndStack {
 
     // 多少天后温度会超过今天
     public int[] dailyTemperatures(int[] T) {
-//        int[] result = new int[T.length];
-//        // 倒着来
-//        int max = Integer.MAX_VALUE;
-//        for (int i = T.length - 1; i >= 0; i--) {
-//            if (T[i] < max) {
-//
-//            }
-//        }
-//
-//        return result;
-        Stack<Integer> stack = new Stack<>();
+        // TODO: 2020/9/4 stack 保存索引，肥肠之巧妙
         int[] ret = new int[T.length];
+        Stack<Integer> stack = new Stack<>();
         for (int i = 0; i < T.length; i++) {
-            while (!stack.isEmpty() && T[i] > T[stack.peek()]) {
-                // 新数据比以前的大，就会回头找对应的数据索引，然后set值
-                int idx = stack.pop();
-                ret[idx] = i - idx;
+            // 如果当前温度小于之前的，不会影响过去
+            // 如果当前温度大于之前的，回头挨个找对应的，进行更新
+            while(!stack.isEmpty() && T[i] > T[stack.peek()]) {
+                // 进入该循环时，之前一定是温度递减的情况，无需更新
+                // 则该循环会回头一直更新到只剩比当前温度高的部分
+                Integer oldIndex = stack.pop();
+                ret[oldIndex] = i - oldIndex;
             }
-            // 一直到循环结束，剩下的一定是比当前大的新加入stack，所以栈里是一个递减的数字
-            stack.push(i);
+            stack.add(i);
         }
         return ret;
-        // TODO: 2020/8/4 想不到oN时间的
     }
 
     // 四则运算栈
@@ -441,7 +422,6 @@ public class QueueAndStack {
             return stack1.isEmpty() && stack2.isEmpty();
         }
 
-        // TODO: 2020/8/5 stack2 非空的时候没必要倒腾
     }
 
     // 队列实现栈
@@ -526,6 +506,39 @@ public class QueueAndStack {
         // TODO: 2020/8/5 通过。但c每次pop再循环后push回去浪费时间。可以正向循环+stack string解决
     }
 
+    // 解码 3[a2[c]] = accaccacc
+    public String decodeString2(String s) {
+        // 俩stack，数字和字符分开存放
+        Stack<Integer> countStack = new Stack<>();
+        Stack<StringBuilder> strStack = new Stack<>();
+        StringBuilder cur = new StringBuilder();
+        int curCount = 0;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if(Character.isDigit(c)) {
+                curCount = c - '0' + curCount * 10;
+            } else if(c == '[') {
+                // 记录循环次数，新建
+                countStack.push(curCount);
+                curCount = 0;
+                // 已有字符串记录
+                strStack.push(cur);
+                cur = new StringBuilder();
+            } else if(c == ']') {
+                // 结束标志，回头找循环
+                StringBuilder newSub = cur;
+                cur = strStack.pop();
+                Integer count = countStack.pop();
+                for (int j = 0; j < count; j++) {
+                    cur.append(newSub);
+                }
+            } else {
+                cur.append(c);
+            }
+        }
+        return cur.toString();
+    }
+
     // 将sr、sc坐标的颜色相同链接范围的，都填充为newColor
     public int[][] floodFill(int[][] image, int sr, int sc, int newColor) {
         // 类似找小岛的DSF算法
@@ -545,9 +558,9 @@ public class QueueAndStack {
 
     // 将非0区域数字都改成和最近0的距离
     public int[][] updateMatrix(int[][] matrix) {
-        // BFS，遇到非0时，寻找四周最小数字，然后+1
-        // TODO: 2020/8/5 递归结束条件？
-        return matrix;
+        // TODO: 2020/9/4 原定思路，BFS，挨个元素去周围找确定的最短距离，开局就111111比较复杂
+        // TODO: 2020/9/4 应该换个思路，BFS，先找所有的0，记录下来，然后queue bfs，向1扩散。注意标记已访问情况
+        return null;
     }
 
     // 钥匙开门

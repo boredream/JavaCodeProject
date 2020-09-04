@@ -17,10 +17,10 @@ public class TreeNode {
 
     public static TreeNode test() {
         //       8
-        //    /    \
-        //   6      2
-        //  / \     / \
-        // 5   7   3  1
+        //     /   \
+        //    6     2
+        //   / \    / \
+        //  5   7  3   1
         TreeNode root = new TreeNode();
         root.val = 8;
         root.left = new TreeNode();

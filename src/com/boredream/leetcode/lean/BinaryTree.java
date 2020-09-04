@@ -16,11 +16,9 @@ public class BinaryTree {
         //  / \     / \
         // 1   3   5   7
         TreeNode node = TreeNode.testSort();
-        node.left.right = null;
-        System.out.println(node);
-        String serialize = new BinaryTree().serialize(node);
-        System.out.println(serialize);
-        TreeNode newNode = new BinaryTree().deserialize(serialize);
+        TreeNode p = node.right.right;
+        TreeNode q = node.right.left;
+        TreeNode newNode = new BinaryTree().lowestCommonAncestor(node, p, q);
         System.out.println(newNode);
     }
 
@@ -379,15 +377,16 @@ public class BinaryTree {
 
     // LCA 最近公共祖先。数字不重复
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        // 探底或者找到匹配数字了，返回
-        if (root == null || root == p || root == q) return root;
-        // 左右挨个递归
+        // 主要是返回值的意义：root结点下p和q公共祖先结点
+
+        // root=p或q时，
+        if(root == null || root == p || root == q) return root;
+
         TreeNode left = lowestCommonAncestor(root.left, p, q);
         TreeNode right = lowestCommonAncestor(root.right, p, q);
-        // 左右都包含child，则当前是公共祖先，否则返回非空的子树
-        if (left != null && right != null) return root;
-        return left != null ? left : right;
-        // TODO: 2020/7/30 不好理解
+        if(left != null && right != null) return root;
+        if(left == null) return right;
+        else return left;
     }
 
     // 序列化二叉树，用层遍历思想
