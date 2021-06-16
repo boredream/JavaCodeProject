@@ -18,6 +18,15 @@ public class Main {
         }
         System.out.println("-------------------");
         System.out.println("sum = " + sum);
+
+        long num = (long) Float.MIN_VALUE;
+        System.out.println(num);
+        System.out.println(Integer.MIN_VALUE);
+        System.out.println(Long.MIN_VALUE);
+
+        System.out.println(Math.pow(3.4, 38));
+
+
     }
 
 }
