@@ -17,6 +17,7 @@ package com.boredream.leetcode;
  * 输入: [3,2,1,0,4]
  * 输出: false
  * 解释: 无论怎样，你总会到达索引为 3 的位置。但该位置的最大跳跃长度是 0 ， 所以你永远不可能到达最后一个位置。
+ * TODO
  */
 public class Q55canJump {
 
@@ -25,11 +26,13 @@ public class Q55canJump {
     }
 
     static boolean canJump(int[] nums) {
-        // 如果可以到达k，则一定可以到达<k的所有位置
-        int k = 0;
+        int maxIndex = 0;
         for (int i = 0; i < nums.length; i++) {
-            if (i > k) return false;
-            k = Math.max(k, i + nums[i]);
+            // 核心：如果当前索引是之前所有数字都无法达到的，则无法跳到底，否则会走完for循环
+            if (i > maxIndex) {
+                return false;
+            }
+            maxIndex = Math.max(maxIndex, nums[i] + i);
         }
         return true;
     }
