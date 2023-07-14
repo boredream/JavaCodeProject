@@ -1,5 +1,7 @@
 package com.boredream.leetcode;
 
+import java.util.Arrays;
+
 /**
  * 给你一个整数数组 nums，返回 数组 answer ，其中 answer[i] 等于 nums 中除 nums[i] 之外其余各元素的乘积 。
  * <p>
@@ -21,15 +23,35 @@ package com.boredream.leetcode;
  * 来源：力扣（LeetCode）
  * 链接：https://leetcode.cn/problems/product-of-array-except-self
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+ * todo
  */
 public class Q238 {
 
     public static void main(String[] args) {
-        int[] nums = {};
-        System.out.println(productExceptSelf(nums));
+        int[] nums = {1,2,3,4};
+        System.out.println(Arrays.toString(productExceptSelf(nums)));
+        // 题解：On时间复杂，最简单的是所有数字一轮乘积，二轮除自己，但是限制不能除法
     }
 
     static int[] productExceptSelf(int[] nums) {
+        // 官方题解：左右乘积列表。因为不能除法，所以可以先保存除自己以外其他的乘数，那如何在非n方的情况下每次都排除自己的，正逆序各自保存除自己的左右侧乘积
+        int[] left = new int[nums.length];
+        int[] right = new int[nums.length];
+        left[0] = 1;
+        right[right.length - 1] = 1;
+        int leftSum = nums[0];
+        int rightSum = nums[nums.length - 1];
+        for (int i = 1; i < nums.length; i++) {
+            left[i] = leftSum;
+            leftSum *= nums[i];
+
+            int endIndex = nums.length - i - 1;
+            right[endIndex] = rightSum;
+            rightSum *= nums[endIndex];
+        }
+        for (int i = 0; i < nums.length; i++) {
+            nums[i] = left[i] * right[i];
+        }
         return nums;
     }
 }
