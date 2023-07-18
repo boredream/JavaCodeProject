@@ -1,5 +1,8 @@
 package com.boredream.leetcode;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * 罗马数字包含以下七种字符： I， V， X， L，C，D 和 M。
  * 字符          数值
@@ -21,7 +24,30 @@ package com.boredream.leetcode;
 public class Q12intToRoman {
 
     public static void main(String[] args) {
-        System.out.println(intToRoman(1994));
+        System.out.println(intToRoman1(1994));
+    }
+
+    static String intToRoman1(int num) {
+        // 思路：和13规则一样，反过来
+        // 数字从高位到低位，先尽量用大的字母，结合余数和除数，一层层添加字母
+        // 对于 IX 这种怎么做？所有情况列出来？
+        String[] stringList = {"I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M"};
+        Integer[] numberList = {1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000};
+        int index = numberList.length - 1;
+        StringBuilder sb = new StringBuilder();
+        while(num > 0) {
+            int n = num / numberList[index];
+            if(n > 0) {
+                // 可以整除，添加字母
+                for (int i = n; i > 0; i--) {
+                    sb.append(stringList[index]);
+                }
+                // 减掉转换字母的数字
+                num -= n * numberList[index];
+            }
+            index --;
+        }
+        return sb.toString();
     }
 
     static String intToRoman(int num) {
