@@ -26,11 +26,45 @@ import java.util.Map;
 public class Q13romanToInt {
 
     public static void main(String[] args) {
-        System.out.println(romanToInt("MCMXCIV"));
+        System.out.println(romanToInt1("MCMXCIV"));
+    }
+
+    static int romanToInt1(String s) {
+        // 思路：难点在于 IV 这样 5-1=4 的情况
+        // 假如正常左到右遍历，遇到 I，不知道是 1 还是和后面 V结合
+        // 那右到左遍历呢，遇到 I，肯定是 1 ，之后遇到大数字先标识下，再遇到小数代表是减法
+        HashMap<Character, Integer> map = new HashMap<>();
+        map.put('I', 1);
+        map.put('V', 5);
+        map.put('X', 10);
+        map.put('L', 50);
+        map.put('C', 100);
+        map.put('D', 500);
+        map.put('M', 1000);
+        int sum = 0;
+        for (int i = s.length() - 1; i >= 0; i--) {
+            char c = s.charAt(i);
+            int number = map.get(c);
+            boolean add = true;
+            if (i < s.length() - 1) {
+                char rightC = s.charAt(i + 1);
+                // TODO: chunyang 2023/7/18 待优化，这一串字符串判断可以优化成按数字大小判断
+                if ((c == 'I' && (rightC == 'V' || rightC == 'X'))
+                        || (c == 'X' && (rightC == 'L' || rightC == 'C'))
+                        || (c == 'C' && (rightC == 'D' || rightC == 'M'))) {
+                    add = false;
+                }
+            }
+            if (!add) {
+                number = -number;
+            }
+            sum += number;
+        }
+        return sum;
     }
 
     static int romanToInt(String s) {
-        if(s == null || s.length() == 0) return 0;
+        if (s == null || s.length() == 0) return 0;
 
         // 思路1：从高位到低位，有个map映射挨个取，注意IV在左的情况优先取这个映射
         Map<String, Integer> map = new HashMap<>();
@@ -52,9 +86,9 @@ public class Q13romanToInt {
 
         int num = 0;
         while (s.length() > 0) {
-            if(s.length() > 1) {
+            if (s.length() > 1) {
                 String doubleStr = s.substring(0, 2);
-                if(doubleMap.containsKey(doubleStr)) {
+                if (doubleMap.containsKey(doubleStr)) {
                     num += doubleMap.get(doubleStr);
                     s = s.replaceFirst(doubleStr, "");
                     continue;
@@ -62,7 +96,7 @@ public class Q13romanToInt {
             }
 
             String singleStr = s.substring(0, 1);
-            if(map.containsKey(singleStr)) {
+            if (map.containsKey(singleStr)) {
                 num += map.get(singleStr);
                 s = s.replaceFirst(singleStr, "");
             }
