@@ -8,7 +8,27 @@ package com.boredream.leetcode;
 public class Q11maxArea {
 
     public static void main(String[] args) {
-        System.out.println(maxArea(new int[]{1, 8, 6, 2, 5, 4, 8, 3, 7}));
+        System.out.println(maxArea1(new int[]{1, 8, 6, 2, 5, 4, 8, 3, 7}));
+    }
+
+    static int maxArea1(int[] height) {
+        // 思路：双指针。什么时候向内呢？下一个数字比当前更高？
+        // 左右如何选择？先处理短的那个
+        // 因为是找到最大值即可，所以所有可能性都可以尝试下，最大值最可能在宽度最大*俩高度最高
+        int left = 0;
+        int right = height.length - 1;
+        int maxArea = 0;
+        while(left < right) {
+            int area = (right - left) * Math.min(height[left], height[right]);
+            maxArea = Math.max(maxArea, area);
+
+            if(height[left] < height[right]) {
+                left ++;
+            } else {
+                right --;
+            }
+        }
+        return maxArea;
     }
 
     public static int maxArea(int[] height) {
