@@ -1,19 +1,18 @@
 package com.boredream.leetcode;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * 给定一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？找出所有满足条件且不重复的三元组。
  * <p>
  * 注意：答案中不可以包含重复的三元组。
+ *
+ * TODO 双指针，注意去重
  */
 public class Q15threeSum {
 
     public static void main(String[] args) {
-        System.out.println(threeSum4(new int[]{-1, -1, 0, 1, 2, -1, -4}));
+        System.out.println(threeSum2(new int[]{-1, -1, 0, 1, 2, -1, -4}));
     }
 
     private static List<List<Integer>> threeSum1(int[] nums) {
@@ -127,5 +126,4 @@ public class Q15threeSum {
         }
         return result;
     }
-
 }
