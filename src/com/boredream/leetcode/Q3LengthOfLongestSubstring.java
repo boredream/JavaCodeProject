@@ -4,11 +4,13 @@ import java.util.HashMap;
 
 /**
  * 给定一个字符串，请你找出其中不含有重复字符的 最长子串 的长度。
+ *
+ * TODO 优化空间
  */
 public class Q3LengthOfLongestSubstring {
 
     public static void main(String[] args) {
-        System.out.println(lengthOfLongestSubstring2("abba"));
+        System.out.println(lengthOfLongestSubstring3("pwwkew"));
     }
 
     private static int lengthOfLongestSubstring(String s) {
@@ -51,6 +53,29 @@ public class Q3LengthOfLongestSubstring {
         }
         max = Math.max(end - first, max);
         return max;
+    }
+
+    private static int lengthOfLongestSubstring3(String s) {
+        // 思路：遍历，挨个往前找，如果判断重复呢？ HashMap。那重复后怎么办呢？从start点继续向后吗？应该滑动窗口直到重复字母
+        if (s.length() <= 1) {
+            return s.length();
+        }
+        int maxLength = 0;
+        int start = 0;
+        HashMap<Character, Integer> charIndexMap = new HashMap<>();
+        for (int i = 0; i < s.length(); i++) {
+            Integer oldIndex = charIndexMap.get(s.charAt(i));
+            if (oldIndex != null) {
+                // 当发现有重复数字后，一直删除到重复数字的位置
+                for (; start <= oldIndex; start++) {
+                    char removeC = s.charAt(start);
+                    charIndexMap.remove(removeC);
+                }
+            }
+            charIndexMap.put(s.charAt(i), i);
+            maxLength = Math.max(maxLength, i - start + 1);
+        }
+        return maxLength;
     }
 
 }
