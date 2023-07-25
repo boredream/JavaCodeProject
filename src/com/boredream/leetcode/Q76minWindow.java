@@ -16,7 +16,7 @@ import java.util.HashMap;
  */
 public class Q76minWindow {
     public static void main(String[] args) {
-        System.out.println(minWindow("ADOBECODEBANC", "ABC"));
+        System.out.println(minWindow("aaaaaaaaaaaabbbbbcddcba", "abcdd"));
     }
 
     static String minWindow2(String s, String t) {
