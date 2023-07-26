@@ -31,9 +31,10 @@ public class Q54spiralOrder {
         int[][] matrix = {
                 {1, 2, 3, 4},
                 {5, 6, 7, 8},
-                {9, 10, 11, 12}
+                {9, 10, 11, 12},
+                {13, 14, 15, 16}
         };
-        System.out.println(spiralOrder(matrix));
+        System.out.println(spiralOrder1(matrix));
     }
 
     static List<Integer> spiralOrder(int[][] matrix) {
@@ -77,6 +78,40 @@ public class Q54spiralOrder {
                     startColumn++;
                     orientation = 0;
                     break;
+            }
+        }
+        return list;
+    }
+
+    static List<Integer> spiralOrder1(int[][] matrix) {
+        List<Integer> list = new ArrayList<>();
+        // 思路：不按箭头顺序插入？不行。List中间插入会影响效率。那还是按箭头顺序
+        int row = matrix.length;
+        int column = matrix[0].length;
+        // 循环N圈
+        int circleCount = (Math.min(row, column) + 1) / 2;
+        for (int i = 0; i < circleCount; i++) {
+            // 每次4个方向循环挨个添加
+            int columnCount = column - i * 2;
+            int rowCount = row - i * 2;
+
+            // 左到右
+            for (int j = i; j < i + columnCount; j++) {
+                list.add(matrix[i][j]);
+            }
+            // 上到下
+            for (int j = i + 1; j < i + rowCount; j++) {
+                list.add(matrix[j][column - i - 1]);
+            }
+            // 前俩正向的，都遍历到底，后俩反向的从+1开始，且判断行列数是否>1，防止当前行列只有1的时候数据错误
+
+            // 右到左
+            for (int j = i + 1; rowCount > 1 && j < i + columnCount; j++) {
+                list.add(matrix[row - i - 1][column - j - 1]);
+            }
+            // 下到上
+            for (int j = i + 1; columnCount > 1 && j < i + rowCount - 1; j++) {
+                list.add(matrix[row - j - 1][i]);
             }
         }
         return list;
