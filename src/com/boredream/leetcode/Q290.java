@@ -34,7 +34,7 @@ import java.util.HashSet;
 public class Q290 {
 
     public static void main(String[] args) {
-        System.out.println(wordPattern("abba", "dog dog dog dog"));
+        System.out.println(wordPattern1("abba", "dog cat cat dog"));
     }
 
     static boolean wordPattern(String pattern, String str) {
@@ -50,9 +50,38 @@ public class Q290 {
                 if (old != chars[i]) return false;
             } else {
                 // 如果没找到key，但是values已经有对应的了，也不行，双向绑定
-                if(values.contains(chars[i])) return false;
+                if (values.contains(chars[i])) return false;
                 map.put(split[i], chars[i]);
                 values.add(chars[i]);
+            }
+        }
+        return true;
+    }
+
+    static boolean wordPattern1(String pattern, String s) {
+        // 思路：map维护映射关系，但是 不同key 对应同一个value 是错误情况，无法直接判断
+        // 所以把value也加入到hash中，加个数字0，这样一定不会和key冲突
+        String[] words = s.split(" ");
+        if (pattern.length() != words.length) {
+            return false;
+        }
+        String[] map = new String[26];
+        HashSet<String> values = new HashSet<>();
+        for (int i = 0; i < pattern.length(); i++) {
+            int index = pattern.charAt(i) - 'a';
+            if (map[index] == null) {
+                // 如果key没保存过，保存映射关系
+                map[index] = words[i];
+                if(values.contains(words[i])) {
+                    // 但是value却保存了，单表有俩key映射了同一个value，有问题
+                    return false;
+                }
+                values.add(words[i]);
+            } else {
+                // key保存过，判断是否相等
+                if (!map[index].equals(words[i])) {
+                    return false;
+                }
             }
         }
         return true;
