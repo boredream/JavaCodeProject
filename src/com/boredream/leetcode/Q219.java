@@ -25,7 +25,7 @@ import java.util.HashMap;
 public class Q219 {
 
     public static void main(String[] args) {
-        System.out.println(containsNearbyDuplicate(new int[]{1, 1}, 2));
+        System.out.println(containsNearbyDuplicate3(new int[]{1,2,3,1,2,3}, 2));
     }
 
     static boolean containsNearbyDuplicate(int[] nums, int k) {
@@ -45,25 +45,17 @@ public class Q219 {
         return false;
     }
 
-    static boolean containsNearbyDuplicate2(int[] nums, int k) {
-        // 找相等的，同时需要数字+索引信息，第一反应hash map
-        // for循环，k-数字，map-索引，<=k的跳过，>k的跳出false
-        if (k <= 0 || k >= nums.length) return false;
-        boolean result = false;
+    static boolean containsNearbyDuplicate3(int[] nums, int k) {
+        // 思路：hash 保存数字+位置。数字重复怎么办？保存最新的位置
         HashMap<Integer, Integer> map = new HashMap<>();
         for (int i = 0; i < nums.length; i++) {
-            Integer old = map.getOrDefault(nums[i], -1);
-            if (old >= 0) {
-                // 有匹配数字
-                result = true;
-                // 超过 k 就 false，否则继续
-                if (i - old > k) return false;
-            } else {
-                map.put(nums[i], i);
+            Integer old = map.get(nums[i]);
+            if(old != null && i - old <= k) {
+                return true;
             }
+            map.put(nums[i], i);
         }
-        // FIXME 错，理解反了~ 这个思路是只要有一个超过k的都不行，其实应该是只要有一个符合<=k的就可以
-        return result;
+        return false;
     }
 
 }
