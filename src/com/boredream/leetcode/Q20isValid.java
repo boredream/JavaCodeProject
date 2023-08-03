@@ -1,6 +1,8 @@
 package com.boredream.leetcode;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Stack;
 
 /**
@@ -38,7 +40,7 @@ import java.util.Stack;
 public class Q20isValid {
 
     public static void main(String[] args) {
-        System.out.println(isValid2("(])"));
+        System.out.println(isValid3("[(])[]{}"));
     }
 
     static boolean isValid(String s) {
@@ -60,10 +62,10 @@ public class Q20isValid {
     }
 
     static boolean isValid2(String s) {
-        if(s == null || s.length() == 0) return true;
+        if (s == null || s.length() == 0) return true;
         Stack<Character> stack = new Stack<>();
         for (char c : s.toCharArray()) {
-            if(stack.isEmpty()) {
+            if (stack.isEmpty()) {
                 stack.push(c);
                 continue;
             }
@@ -72,15 +74,15 @@ public class Q20isValid {
             switch (c) {
                 // 又括弧的判断能不能结对消去
                 case ')':
-                    if(peek == '(') stack.pop();
+                    if (peek == '(') stack.pop();
                     else stack.push(peek);
                     break;
                 case ']':
-                    if(peek == '[') stack.pop();
+                    if (peek == '[') stack.pop();
                     else stack.push(peek);
                     break;
                 case '}':
-                    if(peek == '{') stack.pop();
+                    if (peek == '{') stack.pop();
                     else stack.push(peek);
                     break;
                 default:
@@ -89,6 +91,33 @@ public class Q20isValid {
             }
         }
         return stack.isEmpty();
+    }
+
+    static boolean isValid3(String s) {
+        if (s.length() % 2 == 1) {
+            return false;
+        }
+        Stack<Character> stack = new Stack<>();
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            // 左侧括弧随便加，只有右侧括弧添加时需要check
+            if (c == '}') {
+                if (stack.size() == 0 || stack.pop() != '{') {
+                    return false;
+                }
+            } else if (c == ']') {
+                if (stack.size() == 0 || stack.pop() != '[') {
+                    return false;
+                }
+            } else if (c == ')') {
+                if (stack.size() == 0 || stack.pop() != '(') {
+                    return false;
+                }
+            } else {
+                stack.push(c);
+            }
+        }
+        return stack.size() == 0;
     }
 
 }
