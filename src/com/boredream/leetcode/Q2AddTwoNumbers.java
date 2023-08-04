@@ -14,13 +14,14 @@ import com.boredream.entity.ListNode;
 public class Q2AddTwoNumbers {
 
     public static void main(String[] args) {
-        Integer[] array1 = {5};
-        Integer[] array2 = {5};
+        Integer[] array1 = {2,4,3};
+        Integer[] array2 = {5,6,4};
 
         ListNode node1 = ListNode.array2nodelist(array1);
         ListNode node2 = ListNode.array2nodelist(array2);
 
-        System.out.println(addTwoNumbers2(node1, node2));
+//        System.out.println(addTwoNumbers2(node1, node2));
+        System.out.println(addTwoNumbers3(node1, node2));
     }
 
     public static ListNode addTwoNumbers1(ListNode l1, ListNode l2) {
@@ -92,5 +93,27 @@ public class Q2AddTwoNumbers {
         }
 
         return result.next;
+    }
+
+    public static ListNode addTwoNumbers3(ListNode l1, ListNode l2) {
+        ListNode node = new ListNode();
+        ListNode cur = node;
+        int add = 0;
+        while(l1 != null || l2 != null || add > 0) {
+            int num = add;
+            if(l1 != null) {
+                num += l1.val;
+                l1 = l1.next;
+            }
+            if(l2 != null) {
+                num += l2.val;
+                l2 = l2.next;
+            }
+            add = num / 10;
+            num %= 10;
+            cur.next = new ListNode(num);
+            cur = cur.next;
+        }
+        return node.next;
     }
 }
