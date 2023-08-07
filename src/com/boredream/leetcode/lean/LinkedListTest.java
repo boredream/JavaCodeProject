@@ -269,9 +269,13 @@ public class LinkedListTest {
     public ListNode reverseList1(ListNode head) {
         ListNode pre = null;
         while (head != null) {
+            // 先记录当前指针的下一位next
             ListNode next = head.next;
+            // pre代表当前指针之前所有已经翻转好的节点，head.next=pre意味着把当前节点作为新的头拼接上翻转好部分
             head.next = pre;
+            // 更新pre，代表是新的拼接好的前半段节点头
             pre = head;
+            // 当前指针前进一位
             head = next;
         }
         return pre;
