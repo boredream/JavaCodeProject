@@ -9,7 +9,7 @@ public class Q19removeNthFromEnd {
 
     public static void main(String[] args) {
         ListNode listNode = ListNode.array2nodelist(new Integer[]{1, 2, 3, 4, 5});
-        System.out.println(removeNthFromEnd2(listNode, 5));
+        System.out.println(removeNthFromEnd3(listNode, 1));
     }
 
     static ListNode removeNthFromEnd(ListNode head, int n) {
@@ -49,9 +49,30 @@ public class Q19removeNthFromEnd {
             fast++;
         }
         // fast是size+1，如果n是大于size的，则不会删除
-        if(n < fast) {
+        if (n < fast) {
             slowNode.next = slowNode.next.next;
         }
         return node.next;
     }
+
+    static ListNode removeNthFromEnd3(ListNode head, int n) {
+        // 思路：先fast前进n，然后slow开始前进，fast到底后slow就是倒数n个
+        ListNode node = new ListNode();
+        node.next = head;
+        ListNode fast = node;
+        ListNode slow = node;
+        int step = 0;
+        while (true) {
+            fast = fast.next;
+            if(fast == null) {
+                break;
+            }
+            if (step++ >= n) {
+                slow = slow.next;
+            }
+        }
+        slow.next = slow.next.next;
+        return node.next;
+    }
+
 }

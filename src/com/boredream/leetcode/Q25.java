@@ -21,6 +21,8 @@ import com.boredream.entity.ListNode;
  * 0 <= Node.val <= 1000
  * <p>
  * 进阶：你可以设计一个只用 O(1) 额外内存空间的算法解决此问题吗？
+ *
+ * TODO 不用先计算n
  */
 public class Q25 {
 
