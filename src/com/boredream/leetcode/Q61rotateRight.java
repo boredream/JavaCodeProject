@@ -91,6 +91,7 @@ public class Q61rotateRight {
         slow.next = null;
         fast.next = head;
         return result;
+        // TODO: chunyang 2023/8/9 优化。因为可能k>n，所以会循环一次然后%，因此可以获取n，就不完全用类似删除倒数k的情况了。
     }
 
 }
