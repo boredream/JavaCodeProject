@@ -33,7 +33,9 @@ public class Q86 {
         // 循环的时候先把>=x的删掉拿出来，单独拼成一个链表，最后拼在末尾
         ListNode right = new ListNode();
         ListNode rightEnd = right;
-        ListNode node = head;
+        ListNode result = new ListNode();
+        result.next = head;
+        ListNode node = result;
         while (node.next != null) {
             if(node.next.val >= x) {
                 // 如果下一个值>=x，记录到单独链表上
@@ -48,8 +50,8 @@ public class Q86 {
         // 最后把rightEnd尾节点的next清除，然后重新拼接
         rightEnd.next = null;
         node.next = right.next;
-        return head;
-        // FIXME: 2023/8/9 首位可能是>=x的，不通过
+        return result.next;
+        // TODO: chunyang 2023/8/9 不同于数组，链表是多个节点的指针，所以使用额外的head基本不会有太多额外空间占用
     }
 
 }
