@@ -20,7 +20,7 @@ import com.boredream.entity.ListNode;
  */
 public class Q82 {
     public static void main(String[] args) {
-        System.out.println(deleteDuplicates(ListNode.array2nodelist(new Integer[]{1, 1, 2, 3, 3, 4})));
+        System.out.println(deleteDuplicates1(ListNode.array2nodelist(new Integer[]{1, 1})));
     }
 
     static ListNode deleteDuplicates(ListNode head) {
@@ -42,6 +42,46 @@ public class Q82 {
         }
         // TODO: chunyang 2023/8/8 题目理解错误，重复的全删了，而不是只保留一个
         return head;
+    }
+
+    static ListNode deleteDuplicates1(ListNode head) {
+        if(head == null || head.next == null) {
+            return head;
+        }
+        // 思路：需要把重复数字全部删除，就要记录重复数字的前一个节点
+        ListNode result = new ListNode(200);
+        result.next = head;
+
+        // pre是重复节点的前一个
+        ListNode pre = result;
+        ListNode node = head;
+        boolean isDeleteFlag = false;
+        while (node != null) {
+            if (node.next != null) {
+                if (node.val != node.next.val) {
+                    // 如果当前数字和next不一样，更新pre
+                    if (isDeleteFlag) {
+                        // 如果当前node是重复情况，pre的next指向当前节点的next
+                        pre.next = node.next;
+                        isDeleteFlag = false;
+                    } else {
+                        // 如果当前不是重复情况，pre的next指向当前节点
+                        pre.next = node;
+                        pre = node;
+                    }
+                } else {
+                    // 如果一样
+                    isDeleteFlag = true;
+                }
+            }
+            node = node.next;
+        }
+        if(isDeleteFlag) {
+            // 后面全重复
+            pre.next = null;
+        }
+        return result.next;
+        // TODO: chunyang 2023/8/9 逻辑想复杂了，其实可以判断下个节点和下下个节点，这样就能针对当前这个重复前节点进行next操作了
     }
 
 }
