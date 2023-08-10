@@ -23,8 +23,9 @@ import java.util.Queue;
  * 返回它的最大深度 3 。
  */
 public class Q104maxDepth {
+
     public static void main(String[] args) {
-        System.out.println(maxDepthDFS(TreeNode.test()));
+        System.out.println(maxDepth1(TreeNode.test()));
     }
 
     static int maxDepth(TreeNode root) {
@@ -47,5 +48,31 @@ public class Q104maxDepth {
 
     static int maxDepthDFS(TreeNode root) { // dfs递归版
         return root == null ? 0 : Math.max(maxDepthDFS(root.left), maxDepthDFS(root.right)) + 1;
+    }
+
+    static int maxDepth1(TreeNode root) {
+        // 思路：最大深度，必须遍历到所有节点，DFS or WFS
+        // DFS可以递归，也可以栈？不可以
+        // WFS可以递归，或队列
+        if (root == null) {
+            return 0;
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        int depth = 0;
+        while (!queue.isEmpty()) {
+            depth++;
+            int count = queue.size();
+            for (int i = 0; i < count; i++) {
+                TreeNode poll = queue.poll();
+                if (poll.left != null) {
+                    queue.add(poll.left);
+                }
+                if (poll.right != null) {
+                    queue.add(poll.right);
+                }
+            }
+        }
+        return depth;
     }
 }
