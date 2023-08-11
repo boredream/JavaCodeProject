@@ -36,7 +36,7 @@ public class Q101isSymmetric {
         node.right = new TreeNode(1);
         node.right.left = new TreeNode(3);
         node.right.right = new TreeNode(2);
-        System.out.println(isSymmetric2(node));
+        System.out.println(isSymmetric3(node));
     }
 
     static boolean isSymmetric(TreeNode root) {
@@ -106,6 +106,7 @@ public class Q101isSymmetric {
             queue.addAll(list);
         }
         return true;
+        // FIXME: 2023/8/11 确实是头尾开始取，但是不需要辅助链表
     }
 
     static boolean isSymmetric2(TreeNode root) {
@@ -117,6 +118,27 @@ public class Q101isSymmetric {
         if (left == null && right == null) return true;
         if (left == null || right == null) return false;
         return left.val == right.val && isSymmetric2(left.left, right.right) && isSymmetric2(left.right, right.left);
+    }
+
+    static boolean isSymmetric3(TreeNode root) {
+        // 思路：先定义镜像的判断标准，即根节点的左节点是和右节点是翻转对应的
+        // 如何判断俩翻转对应呢？ 当前val相等，且left.left对应right.right && left.right对应right.left
+        if (root == null) return false;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root.left);
+        queue.add(root.right);
+        while(!queue.isEmpty()) {
+            // 队列顺序和原始树顺序不同，队列顺序是按 最左侧最右侧 一组加入
+            TreeNode left = queue.poll();
+            TreeNode right = queue.poll();
+            if(left == null && right == null) continue;
+            if(left == null || right == null || left.val != right.val) return false;
+            queue.offer(left.left);
+            queue.offer(right.right);
+            queue.offer(left.right);
+            queue.offer(right.left);
+        }
+        return true;
     }
 
 }
