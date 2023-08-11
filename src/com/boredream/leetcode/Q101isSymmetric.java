@@ -29,7 +29,14 @@ import java.util.Queue;
 public class Q101isSymmetric {
 
     public static void main(String[] args) {
-
+        TreeNode node = new TreeNode();
+        node.left = new TreeNode(1);
+        node.left.left = new TreeNode(2);
+        node.left.right = new TreeNode(3);
+        node.right = new TreeNode(1);
+        node.right.left = new TreeNode(3);
+        node.right.right = new TreeNode(2);
+        System.out.println(isSymmetric2(node));
     }
 
     static boolean isSymmetric(TreeNode root) {
@@ -62,5 +69,54 @@ public class Q101isSymmetric {
                 isSymmetric(root1.right, root2.left);
     }
 
+    static boolean isSymmetric1(TreeNode root) {
+        // 思路：先定义镜像的判断标准，即根节点的左节点是和右节点是翻转对应的
+        // 如何判断俩翻转对应呢？ 当前val相等，且left.left对应right.right && left.right对应right.left
+
+        if (root == null) return false;
+        if (root.left == null && root.right == null) return true;
+        if (root.left == null || root.right == null) return false;
+
+        // 非递归方式判断，一个队列，一个左一个右轮着加入
+        LinkedList<TreeNode> queue = new LinkedList<>();
+        queue.add(root.left);
+        queue.add(root.right);
+
+        while(!queue.isEmpty()) {
+            int size = queue.size();
+            if(size % 2 == 1) {
+                // 奇数，一定是不对称的
+                return false;
+            }
+
+            // 应该每次头尾各取一个，然后对应翻转
+            LinkedList<TreeNode> list = new LinkedList<>();
+            for (int i = 0; i < size / 2; i++) {
+                TreeNode left = queue.removeFirst();
+                TreeNode right = queue.removeLast();
+                if (left == null && right == null) return true;
+                if (left == null || right == null) return false;
+                if(left.val != right.val) return false;
+
+                list.addFirst(left.right);
+                list.addFirst(left.left);
+                list.addLast(right.left);
+                list.addLast(right.right);
+            }
+            queue.addAll(list);
+        }
+        return true;
+    }
+
+    static boolean isSymmetric2(TreeNode root) {
+        if (root == null) return false;
+        return isSymmetric2(root.left, root.right);
+    }
+
+    private static boolean isSymmetric2(TreeNode left, TreeNode right) {
+        if (left == null && right == null) return true;
+        if (left == null || right == null) return false;
+        return left.val == right.val && isSymmetric2(left.left, right.right) && isSymmetric2(left.right, right.left);
+    }
 
 }
