@@ -7,9 +7,9 @@ import java.util.Stack;
 
 /**
  * 给定两个整数数组 inorder 和 postorder ，其中 inorder 是二叉树的中序遍历， postorder 是同一棵树的后序遍历，请你构造并返回这颗 二叉树 。
- *      3
- *   9     20
- *       15   7
+ * 3
+ * 9     20
+ * 15   7
  */
 public class Q106 {
 
@@ -17,7 +17,32 @@ public class Q106 {
         int[] inorder = {9, 3, 15, 20, 7};
         int[] postorder = {9, 15, 7, 20, 3};
         System.out.println(buildTree(inorder, postorder));
+        System.out.println(buildTree1(inorder, postorder));
     }
+
+    static TreeNode buildTree1(int[] inorder, int[] postorder) {
+        // 思路：迭代，类似前序+中序逻辑，前序=后续 反过来
+        TreeNode root = new TreeNode(postorder[postorder.length - 1]);
+        Stack<TreeNode> rightNodeStack = new Stack<>();
+        rightNodeStack.push(root);
+        int inIndex = inorder.length - 1;
+        for (int i = postorder.length - 2; i >= 0; i--) {
+            TreeNode node = rightNodeStack.peek();
+            if (node.val != inorder[inIndex]) {
+                node.right = new TreeNode(postorder[i]);
+                rightNodeStack.push(node.right);
+            } else {
+                while (!rightNodeStack.isEmpty() && rightNodeStack.peek().val == inorder[inIndex]) {
+                    node = rightNodeStack.pop();
+                    inIndex--;
+                }
+                node.left = new TreeNode(postorder[i]);
+                rightNodeStack.push(node.left);
+            }
+        }
+        return root;
+    }
+
 
     static TreeNode buildTree(int[] inorder, int[] postorder) {
         // 思路：递归的WFS更好理解，类似前序+中序逻辑
@@ -30,7 +55,7 @@ public class Q106 {
 
     static TreeNode buildTree(HashMap<Integer, Integer> inorderNumIndexMap, int inStart, int inEnd,
                               int[] postorder, int postStart, int postEnd) {
-        if(postStart > postEnd) {
+        if (postStart > postEnd) {
             return null;
         }
 
