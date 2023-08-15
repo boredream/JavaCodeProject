@@ -5,6 +5,7 @@ import com.boredream.entity.TreeNode;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Stack;
 
 /**
  * 给定两个整数数组 preorder 和 inorder ，其中 preorder 是二叉树的先序遍历， inorder 是同一棵树的中序遍历，请构造二叉树并返回其根节点。
@@ -32,11 +33,38 @@ public class Q105 {
         int[] preorder = {3, 9, 20, 15, 7};
         int[] inorder = {9, 3, 15, 20, 7};
         System.out.println(buildTree(preorder, inorder));
+        System.out.println(buildTree1(preorder, inorder));
+    }
+
+    static TreeNode buildTree1(int[] preorder, int[] inorder) {
+        // 思路：前序是 中左右；中序是 左中右
+        // 迭代构建是 DFS，按前序的中左右顺序
+        TreeNode root = new TreeNode(preorder[0]);
+        Stack<TreeNode> leftNodeStack = new Stack<>();
+        leftNodeStack.add(root);
+        int inIndex = 0;
+        for (int i = 1; i < preorder.length; i++) {
+            TreeNode node = leftNodeStack.peek();
+            // 如果前序的数字和中序的不同，代表一直是左节点，加入栈
+            if(node.val != inorder[inIndex]) {
+                node.left = new TreeNode(preorder[i]);
+                leftNodeStack.add(node.left);
+            } else {
+                // 如果前序数字和中序相同，代表到达最左了，则回退栈找到应该添加右节点的位置
+                while(!leftNodeStack.isEmpty() && leftNodeStack.peek().val == inorder[inIndex]) {
+                    node = leftNodeStack.pop();
+                    inIndex ++;
+                }
+                node.right = new TreeNode(preorder[i]);
+                leftNodeStack.push(node.right);
+            }
+        }
+        return root;
     }
 
     static TreeNode buildTree(int[] preorder, int[] inorder) {
         // 思路：前序是 中左右；中序是 左中右
-        // 构建一般是 WFS，先前序找到根节点，然后拿根节点去中序里确定左右的树，如此递归下去
+        // 递归构建一般是 WFS，先前序找到根节点，然后拿根节点去中序里确定左右的树，循环递归
 
         HashMap<Integer, Integer> numIndexMap = new HashMap<>();
         for (int i = 0; i < inorder.length; i++) {

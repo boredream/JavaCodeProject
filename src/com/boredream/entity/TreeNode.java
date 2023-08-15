@@ -71,15 +71,14 @@ public class TreeNode {
             int size = queue.size();
             for (int i = 0; i < size; i++) {
                 TreeNode head = queue.poll();
+                if(head == null) {
+                    sb.append("null ");
+                    continue;
+                }
                 sb.append(head.val).append(" ");
 
-                if (head.left != null) {
-                    queue.offer(head.left);
-                }
-
-                if (head.right != null) {
-                    queue.offer(head.right);
-                }
+                queue.offer(head.left);
+                queue.offer(head.right);
             }
             sb.append("\n");
         }
