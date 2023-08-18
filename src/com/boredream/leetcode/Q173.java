@@ -67,6 +67,7 @@ public class Q173 {
                 if (node.left != null) {
                     stack.push(node.left);
                     // 断掉链接，防止下次继续循环
+                    // TODO: chunyang 2023/8/18 有待优化
                     node.left = null;
                 } else {
                     break;
