@@ -12,6 +12,8 @@ import com.boredream.entity.TreeNode;
  * 所有 Node.val 互不相同 。
  * p != q
  * p 和 q 均存在于给定的二叉树中。
+ *
+ * TODO 递归不一定要一路return 回去，也可以考虑全局变量保存
  */
 public class Q236 {
 
