@@ -9,9 +9,9 @@ import java.util.Stack;
 /**
  * 二叉树遍历
  */
-public class foreachTreeNode {
+public class ForeachTreeNode {
 
-    public static void main(StringAlg[] args) {
+    public static void main(String[] args) {
         //       8
         //    /    \
         //   6      10
