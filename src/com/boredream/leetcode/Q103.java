@@ -8,47 +8,37 @@ import java.util.List;
 import java.util.Queue;
 
 /**
- * 给定一个二叉树，返回其按层次遍历的节点值。 （即逐层地，从左到右访问所有节点）。
- * <p>
- * 例如:
- * 给定二叉树: [3,9,20,null,null,15,7],
- * <p>
- *       3
- *      / \
- *     9  20
- *       /  \
- *      15   7
- * 返回其层次遍历结果：
- * <p>
- * [
- * [3],
- * [9,20],
- * [15,7]
- * ]
+ * 给你二叉树的根节点 root ，返回其节点值的 锯齿形层序遍历 。（即先从左往右，再从右往左进行下一层遍历，以此类推，层与层之间交替进行）。
  */
-public class Q102levelOrder {
+public class Q103 {
 
     public static void main(String[] args) {
-        System.out.println(levelOrder(TreeNode.test()));
+        System.out.println(zigzagLevelOrder(TreeNode.test()));
     }
 
-    static List<List<Integer>> levelOrder(TreeNode root) {
+    static List<List<Integer>> zigzagLevelOrder(TreeNode root) {
         // 迭代版本，一层一层来
         List<List<Integer>> list = new ArrayList<>();
         if(root == null) return list;
         Queue<TreeNode> queue = new LinkedList<>();
         queue.add(root);
+        boolean oddLevel = true;
         while(!queue.isEmpty()) {
             // 一层~ 所以一次性for循环完
-            List<Integer> level = new ArrayList<>();
+            LinkedList<Integer> level = new LinkedList<>();
             int levelCount = queue.size();
             for (int i = 0; i < levelCount; i++) {
                 TreeNode node = queue.poll();
-                level.add(node.val);
+                if(oddLevel) {
+                    level.add(node.val);
+                } else {
+                    level.addFirst(node.val);
+                }
                 if(node.left != null) queue.add(node.left);
                 if(node.right != null) queue.add(node.right);
             }
             list.add(level);
+            oddLevel = !oddLevel;
         }
         return list;
     }
