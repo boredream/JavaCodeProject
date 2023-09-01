@@ -15,6 +15,7 @@ public class Q17letterCombinations {
 
     public static void main(String[] args) {
         System.out.println(letterCombinations("47"));
+        System.out.println(letterCombinations2(""));
     }
 
     static List<String> letterCombinations(String digits) {
@@ -39,4 +40,33 @@ public class Q17letterCombinations {
             step(list, s + c, leftDigits.substring(1));
         }
     }
+
+    static List<String> letterCombinations2(String digits) {
+        // 思路：递归
+        List<String> list = new ArrayList<>();
+        step2(list, "", digits);
+        return list;
+    }
+
+    static void step2(List<String> list, String pre, String digits) {
+        int startIndex = pre.length();
+        int firstNumber = digits.charAt(startIndex) - '0';
+        String str = charmap[firstNumber];
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            String newPre = pre + c;
+            if(digits.length() - pre.length() == 1) {
+                list.add(newPre);
+                continue;
+            }
+            step2(list, newPre, digits);
+        }
+    }
+
+    // TODO: chunyang 2023/9/1 普通递归+pre方式，会有多个pre变量，所以内存消耗较大。
+    //  要考虑使用回溯，一个StringBuilder，add到叶节点后，再delete回溯到下一个情况
+
+
+
+
 }
