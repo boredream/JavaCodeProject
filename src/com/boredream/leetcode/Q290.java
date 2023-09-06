@@ -2,6 +2,7 @@ package com.boredream.leetcode;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 /**
  * 给定一种规律 pattern 和一个字符串 str ，判断 str 是否遵循相同的规律。
@@ -34,7 +35,7 @@ import java.util.HashSet;
 public class Q290 {
 
     public static void main(String[] args) {
-        System.out.println(wordPattern1("abba", "dog cat cat dog"));
+        System.out.println(wordPattern("abba", "dog cat cat dog"));
     }
 
     static boolean wordPattern(String pattern, String str) {
@@ -53,6 +54,22 @@ public class Q290 {
                 if (values.contains(chars[i])) return false;
                 map.put(split[i], chars[i]);
                 values.add(chars[i]);
+            }
+        }
+        return true;
+    }
+
+    static boolean wordPattern2(String pattern, String s) {
+        String[] as = s.split(" ");
+        Map<Character,String> map = new HashMap<>();
+
+        for(int i = 0;i<pattern.length();i++){
+            if(map.get(pattern.charAt(i)) == null){
+                map.put(pattern.charAt(i),as[i]);
+            }else{
+                if(!map.get(pattern.charAt(i)).equals(as[i])){
+                    return false;
+                }
             }
         }
         return true;
