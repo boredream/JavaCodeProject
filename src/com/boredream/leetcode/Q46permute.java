@@ -1,6 +1,7 @@
 package com.boredream.leetcode;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class Q46permute {
@@ -8,6 +9,7 @@ public class Q46permute {
     public static void main(String[] args) {
         int[] cadidates = {1, 2, 3};
         System.out.println(permute(cadidates));
+        System.out.println(permute1(cadidates));
     }
 
     static List<List<Integer>> permute(int[] nums) {
@@ -31,5 +33,26 @@ public class Q46permute {
         }
     }
 
+    static List<List<Integer>> permute1(int[] nums) {
+        List<List<Integer>> totalList = new ArrayList<>();
+        // 思路：回溯 排列。注意回溯规程去除重复数字，HashSet？
+        backStack(totalList, new ArrayList<>(), new HashSet<>(), nums);
+        return totalList;
+    }
+
+    static void backStack(List<List<Integer>> totalList, List<Integer> list, HashSet<Integer> set, int[] nums) {
+        if(list.size() == nums.length) {
+            totalList.add(new ArrayList<>(list));
+            return;
+        }
+        for (int num : nums) {
+            if(set.contains(num)) continue;
+            list.add(num);
+            set.add(num);
+            backStack(totalList, list, set, nums);
+            list.remove(list.size() - 1);
+            set.remove(num);
+        }
+    }
 
 }
