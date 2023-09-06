@@ -37,7 +37,7 @@ public class Q77 {
     static List<List<Integer>> combine(int n, int k) {
         List<List<Integer>> totalList = new ArrayList<>();
         // 思路：回溯 组合
-        backTrack(totalList, null, n, k);
+        backTrack(totalList, new ArrayList<>(), n, k);
         return totalList;
     }
 
@@ -47,11 +47,8 @@ public class Q77 {
             return;
         }
         for (int i = n; i >= 1; i--) {
-            if(list == null) {
-                list = new ArrayList<>();
-            }
             list.add(i);
-            backTrack(totalList, list, n - 1, k -1);
+            backTrack(totalList, list, i - 1, k -1);
             list.remove(list.size() - 1);
         }
     }
