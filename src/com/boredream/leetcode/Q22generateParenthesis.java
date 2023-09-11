@@ -19,9 +19,7 @@ import java.util.List;
 public class Q22generateParenthesis {
 
     public static void main(String[] args) {
-        for (String s : generateParenthesis2(3)) {
-            System.out.println(s);
-        }
+        System.out.println(generateParenthesis3(3));
     }
 
     static List<String> generateParenthesis(int n) {
@@ -62,4 +60,29 @@ public class Q22generateParenthesis {
         if (left < n) backtrack2(list, cur + '(', left + 1, right, n);
         if (right < left) backtrack2(list, cur + ')', left, right + 1, n);
     }
+
+    static List<String> generateParenthesis3(int n) {
+        List<String> list = new ArrayList<>();
+        backtrack3(list, new StringBuilder(), n, n);
+        return list;
+    }
+
+    private static void backtrack3(List<String> list, StringBuilder sb, int leftCount, int rightCount) {
+        if (leftCount == 0 && rightCount == 0) {
+            list.add(sb.toString());
+            return;
+        }
+
+        if (leftCount > 0) {
+            sb.append('(');
+            backtrack3(list, sb, leftCount - 1, rightCount);
+            sb.deleteCharAt(sb.length() - 1);
+        }
+        if (rightCount > 0 && rightCount > leftCount) {
+            sb.append(')');
+            backtrack3(list, sb, leftCount, rightCount - 1);
+            sb.deleteCharAt(sb.length() - 1);
+        }
+    }
+
 }
