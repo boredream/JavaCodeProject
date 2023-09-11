@@ -36,6 +36,7 @@ public class Q39combinationSum {
         int[] cadidates = {1,2,3};
         int target = 4;
         System.out.println(combinationSum(cadidates, target));
+        System.out.println(combinationSum2(cadidates, target));
     }
 
     private static List<List<Integer>> combinationSum(int[] candidates, int target) {
@@ -57,6 +58,28 @@ public class Q39combinationSum {
             cur.add(candidates[i]);
             append(candidates, list, cur, curTotal + candidates[i], i, target);
             cur.remove(cur.size() - 1);
+        }
+    }
+
+    private static List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        // 思路：回溯，数字可以重复用，所以不用考虑剪枝
+        List<List<Integer>> totalList = new ArrayList<>();
+        backTracking(totalList, new ArrayList<>(), candidates, 0, target);
+        return totalList;
+    }
+
+    private static void backTracking(List<List<Integer>> totalList, ArrayList<Integer> list, int[] candidates, int startIndex, int target) {
+        if(target == 0) {
+            totalList.add(new ArrayList<>(list));
+            return;
+        }
+        for (int i = startIndex; i < candidates.length; i++) {
+            if(candidates[i] > target) {
+                continue;
+            }
+            list.add(candidates[i]);
+            backTracking(totalList, list, candidates, i, target - candidates[i]);
+            list.remove(list.size() - 1);
         }
     }
 
